@@ -1,20 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Home</title>
+    <title>SMART NATAR</title>
 </head>
 <body>
+    <h1>Smart Natar Issue Reporting</h1>
+    <p>Selamat datang di aplikasi pelaporan masalah kota Natar Tercinta.</p>
 
-    <h1>Selamat Datang di kota Bandar Lampung</h1>
-    <p>Ini adalah halaman utama.</p>
-
-    <hr>
-
-    <h3>Menu</h3>
-
-    <a href="/">Home</a> |
-    <a href="/about/">About</a> |
-    <a href="/contacts/">Contacts</a>
-
+    <a href="{% url 'report_list' %}">Daftar Laporan</a>
+    <br><br>
+    <a href="{% url 'add_report' %}">Tambah Laporan</a>
 </body>
 </html>
