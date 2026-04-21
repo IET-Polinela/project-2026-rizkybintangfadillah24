@@ -1,10 +1,38 @@
-<h1>Hapus Laporan</h1>
+{% extends 'base.html' %}
 
-<p>Apakah Anda yakin ingin menghapus laporan: <strong>{{ report.title }}</strong>?</p>
+{% block title %}Hapus Laporan{% endblock %}
 
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Ya, Hapus</button>
-</form>
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'home' %}">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'report_list' %}">Reports</a>
+        </li>
+        <li class="breadcrumb-item active">Hapus Laporan</li>
+    </ol>
+</nav>
 
-<a href="{% url 'report_list' %}">Batal</a>
+<div class="card shadow-sm border-danger">
+    <div class="card-body">
+        <h2 class="text-danger mb-3">Hapus Laporan</h2>
+
+        <p>
+            Apakah Anda yakin ingin menghapus laporan
+            <strong>{{ report.title }}</strong>?
+        </p>
+
+        <p class="text-muted">
+            Tindakan ini tidak dapat dibatalkan.
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+            <a href="{% url 'report_list' %}" class="btn btn-secondary">Batal</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

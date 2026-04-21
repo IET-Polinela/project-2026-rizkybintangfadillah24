@@ -1,12 +1,67 @@
-<h1>Detail Laporan</h1>
+{% extends 'base.html' %}
 
-<p><strong>Judul:</strong> {{ report.title }}</p>
-<p><strong>Kategori:</strong> {{ report.category }}</p>
-<p><strong>Deskripsi:</strong> {{ report.description }}</p>
-<p><strong>Lokasi:</strong> {{ report.location }}</p>
-<p><strong>Status:</strong> {{ report.get_status_display }}</p>
-<p><strong>Dibuat:</strong> {{ report.created_at }}</p>
+{% block title %}Detail Laporan{% endblock %}
 
-<a href="{% url 'report_list' %}">Kembali</a>
-<a href="{% url 'edit_report' report.pk %}">Edit</a>
-<a href="{% url 'delete_report' report.pk %}">Delete</a>
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'home' %}">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'report_list' %}">Reports</a>
+        </li>
+        <li class="breadcrumb-item active">Detail Laporan</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h2 class="mb-4">Detail Laporan</h2>
+
+        <div class="row mb-3">
+            <div class="col-md-3 fw-bold">Judul</div>
+            <div class="col-md-9">{{ report.title }}</div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-3 fw-bold">Kategori</div>
+            <div class="col-md-9">{{ report.category }}</div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-3 fw-bold">Deskripsi</div>
+            <div class="col-md-9">{{ report.description }}</div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-3 fw-bold">Lokasi</div>
+            <div class="col-md-9">{{ report.location }}</div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-3 fw-bold">Status</div>
+            <div class="col-md-9">
+                {% if report.status == 'REPORTED' %}
+                    <span class="badge bg-secondary status-badge">Reported</span>
+                {% elif report.status == 'VERIFIED' %}
+                    <span class="badge bg-primary status-badge">Verified</span>
+                {% elif report.status == 'IN_PROGRESS' %}
+                    <span class="badge bg-warning text-dark status-badge">In Progress</span>
+                {% elif report.status == 'RESOLVED' %}
+                    <span class="badge bg-success status-badge">Resolved</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-3 fw-bold">Dibuat Pada</div>
+            <div class="col-md-9">{{ report.created_at }}</div>
+        </div>
+
+        <a href="{% url 'report_list' %}" class="btn btn-secondary">Kembali</a>
+        <a href="{% url 'edit_report' report.pk %}" class="btn btn-warning text-dark">Edit</a>
+        <a href="{% url 'delete_report' report.pk %}" class="btn btn-danger">Hapus</a>
+    </div>
+</div>
+{% endblock %}

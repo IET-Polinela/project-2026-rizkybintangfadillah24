@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views import View
 from django.urls import reverse_lazy
+from django.contrib import messages
 from .models import Report
 from .forms import ReportForm
 
@@ -29,6 +30,10 @@ class ReportCreateView(CreateView):
     template_name = 'main_app/add_report.html'
     success_url = reverse_lazy('report_list')
 
+    def form_valid(self, form):
+        messages.success(self.request, 'Laporan berhasil ditambahkan.')
+        return super().form_valid(form)
+
 
 class ReportUpdateView(UpdateView):
     model = Report
@@ -37,12 +42,20 @@ class ReportUpdateView(UpdateView):
     context_object_name = 'report'
     success_url = reverse_lazy('report_list')
 
+    def form_valid(self, form):
+        messages.success(self.request, 'Laporan berhasil diperbarui.')
+        return super().form_valid(form)
+
 
 class ReportDeleteView(DeleteView):
     model = Report
     template_name = 'main_app/delete_report.html'
     context_object_name = 'report'
     success_url = reverse_lazy('report_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Laporan berhasil dihapus.')
+        return super().form_valid(form)
 
 
 class ReportUpdateStatusView(View):
@@ -59,5 +72,9 @@ class ReportUpdateStatusView(View):
         if report.status in valid_transitions and new_status == valid_transitions[report.status]:
             report.status = new_status
             report.save()
+            messages.success(
+                request,
+                f'Status laporan "{report.title}" berhasil diubah menjadi {report.get_status_display()}.'
+            )
 
         return redirect('report_list')

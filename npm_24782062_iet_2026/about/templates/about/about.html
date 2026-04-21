@@ -1,17 +1,39 @@
-<a href="/">Home</a> |
-<a href="/about/">About</a> |
-<a href="/contacts/">Contacts</a>
+{% extends 'base.html' %}
 
-<hr>
+{% block title %}About - Natar City{% endblock %}
 
-<h1>Halaman About</h1>
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'home' %}">Home</a>
+        </li>
+        <li class="breadcrumb-item active">About</li>
+    </ol>
+</nav>
 
-<hr>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h2 class="mb-4">Halaman About</h2>
 
-<p>Website ini dibuat sebagai bagian dari praktikum Pemrograman Internet I menggunakan framework Django. Django adalah framework web berbasis Python yang digunakan untuk membangun aplikasi web dengan cepat, aman, dan terstruktur. Framework ini menyediakan berbagai fitur bawaan seperti sistem routing URL, template engine, dan pengelolaan database sehingga memudahkan pengembang dalam membuat aplikasi web. Website ini memiliki beberapa halaman seperti Home, About, dan Contacts yang saling terhubung.</p>
-<p>
-Pembuat Website <br>
-Nama : Rizky Bintang Fadillah <br>
-NPM : 24782062 <br>
-Program Studi : Teknologi Rekayasa Internet
-</p>
+        <p>
+            Website ini dibuat sebagai bagian dari praktikum Pemrograman Internet I menggunakan
+            framework Django. Django adalah framework web berbasis Python yang digunakan untuk
+            membangun aplikasi web dengan cepat, aman, dan terstruktur.
+        </p>
+
+        <p>
+            Framework ini menyediakan berbagai fitur bawaan seperti sistem routing URL, template engine,
+            dan pengelolaan database sehingga memudahkan pengembang dalam membuat aplikasi web.
+            Website ini memiliki beberapa halaman seperti Home, About, Contacts, dan Reports yang saling terhubung.
+        </p>
+
+        <hr>
+
+        <h5 class="mt-4">Informasi Pembuat</h5>
+        <p class="mb-1"><strong>Nama:</strong> Rizky Bintang Fadillah</p>
+        <p class="mb-1"><strong>NPM:</strong> 24782062</p>
+        <p class="mb-0"><strong>Program Studi:</strong> Teknologi Rekayasa Internet</p>
+    </div>
+</div>
+{% endblock %}

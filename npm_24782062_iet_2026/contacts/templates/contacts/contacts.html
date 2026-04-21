@@ -1,17 +1,42 @@
-<a href="/">Home</a> |
-<a href="/about/">About</a> |
-<a href="/contacts/">Contacts</a>
+{% extends 'base.html' %}
 
-<hr>
+{% block title %}Contacts - Natar City{% endblock %}
 
-<h1>Halaman Contacts</h1>
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'home' %}">Home</a>
+        </li>
+        <li class="breadcrumb-item active">Contacts</li>
+    </ol>
+</nav>
 
-<hr>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h2 class="mb-4">Halaman Contacts</h2>
 
-<p>Silahkan Hubungi saya</p>
-<p>
-Nama : Rizky Bintang Fadillah <br>
-Email : rizkybf24@gmail.com <br>
-WhatsApp : 085129550318 <br>
-Lokasi : Lampung, Indonesia
-</p>
+        <p>Silakan hubungi saya melalui informasi berikut:</p>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Nama</div>
+            <div class="col-md-9">Rizky Bintang Fadillah</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Email</div>
+            <div class="col-md-9">rizkybf24@gmail.com</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">WhatsApp</div>
+            <div class="col-md-9">085129550318</div>
+        </div>
+
+        <div class="row mb-0">
+            <div class="col-md-3 fw-bold">Lokasi</div>
+            <div class="col-md-9">Lampung, Indonesia</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
