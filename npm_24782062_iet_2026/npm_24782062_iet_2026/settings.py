@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'main_app',
     'about',
     'contacts',
+    'usermanagement_24782062',
 ]
 
 MIDDLEWARE = [
@@ -78,7 +79,7 @@ WSGI_APPLICATION = 'npm_24782062_iet_2026.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Natar_db',
+        'NAME': 'Natar_db6',
         'USER': 'postgres',
         'PASSWORD': '123',
         'HOST': 'localhost',
@@ -127,3 +128,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = 'usermanagement_24782062.CustomUser'

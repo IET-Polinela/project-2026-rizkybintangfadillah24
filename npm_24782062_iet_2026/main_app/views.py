@@ -1,14 +1,30 @@
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views import View
 from django.urls import reverse_lazy
-from django.contrib import messages
 from .models import Report
 from .forms import ReportForm
 
 
 def home(request):
     return render(request, 'main_app/home.html')
+
+
+class AdminRequiredMixin(LoginRequiredMixin):
+    login_url = reverse_lazy('login')
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, 'Silakan login terlebih dahulu.')
+            return self.handle_no_permission()
+
+        if not request.user.is_admin:
+            messages.error(request, 'Akses ditolak. Hanya admin yang dapat mengakses fitur ini.')
+            return redirect('report_list')
+
+        return super().dispatch(request, *args, **kwargs)
 
 
 class ReportListView(ListView):
@@ -24,7 +40,7 @@ class ReportDetailView(DetailView):
     context_object_name = 'report'
 
 
-class ReportCreateView(CreateView):
+class ReportCreateView(AdminRequiredMixin, CreateView):
     model = Report
     form_class = ReportForm
     template_name = 'main_app/add_report.html'
@@ -35,7 +51,7 @@ class ReportCreateView(CreateView):
         return super().form_valid(form)
 
 
-class ReportUpdateView(UpdateView):
+class ReportUpdateView(AdminRequiredMixin, UpdateView):
     model = Report
     form_class = ReportForm
     template_name = 'main_app/edit_report.html'
@@ -47,7 +63,7 @@ class ReportUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class ReportDeleteView(DeleteView):
+class ReportDeleteView(AdminRequiredMixin, DeleteView):
     model = Report
     template_name = 'main_app/delete_report.html'
     context_object_name = 'report'
@@ -58,7 +74,7 @@ class ReportDeleteView(DeleteView):
         return super().form_valid(form)
 
 
-class ReportUpdateStatusView(View):
+class ReportUpdateStatusView(AdminRequiredMixin, View):
     def post(self, request, pk):
         report = get_object_or_404(Report, pk=pk)
         new_status = request.POST.get('status')

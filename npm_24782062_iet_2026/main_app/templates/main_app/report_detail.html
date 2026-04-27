@@ -60,8 +60,11 @@
         </div>
 
         <a href="{% url 'report_list' %}" class="btn btn-secondary">Kembali</a>
-        <a href="{% url 'edit_report' report.pk %}" class="btn btn-warning text-dark">Edit</a>
-        <a href="{% url 'delete_report' report.pk %}" class="btn btn-danger">Hapus</a>
+
+        {% if user.is_authenticated and user.is_admin %}
+            <a href="{% url 'edit_report' report.pk %}" class="btn btn-warning text-dark">Edit</a>
+            <a href="{% url 'delete_report' report.pk %}" class="btn btn-danger">Hapus</a>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

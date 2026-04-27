@@ -24,6 +24,17 @@
         .navbar-brand {
             font-weight: 600;
         }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.75);
+            padding: 0.5rem 1rem;
+        }
+
+        .logout-btn:hover {
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -46,11 +57,30 @@
                         <a class="nav-link" href="{% url 'report_list' %}">Reports</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/about/">About</a>
+                        <a class="nav-link" href="{% url 'about' %}">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/contacts/">Contact</a>
+                        <a class="nav-link" href="{% url 'contacts' %}">Contact</a>
                     </li>
+
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <span class="nav-link">Hi, {{ user.username }}</span>
+                        </li>
+                        <li class="nav-item">
+                            <form method="post" action="{% url 'logout' %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="logout-btn nav-link">Logout</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register' %}">Register</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
@@ -90,7 +120,7 @@
 
                     if (submitBtn) {
                         submitBtn.disabled = true;
-                        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Loading...';
+                        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Loading...</span>';
                     }
 
                     setTimeout(function() {
