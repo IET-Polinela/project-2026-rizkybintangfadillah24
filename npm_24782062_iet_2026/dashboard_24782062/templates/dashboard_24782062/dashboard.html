@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Dashboard</li>
+    </ol>
+</nav>
+
+<div class="mb-4">
+    <h2>Dashboard Statistik</h2>
+    <p class="text-muted mb-0">Ringkasan visual laporan berdasarkan data yang ada di sistem.</p>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">Distribusi Status Laporan</h5>
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">Distribusi Kategori Laporan</h5>
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">5 Laporan Terakhir Dilaporkan (REPORTED)</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Judul</th>
+                                <th>Kategori</th>
+                                <th>Lokasi</th>
+                                <th>Status</th>
+                                <th>Dibuat</th>
+                            </tr>
+                        </thead>
+                        <tbody id="latestReportedTable">
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">Memuat data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">5 Laporan Terakhir Selesai (RESOLVED)</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Judul</th>
+                                <th>Kategori</th>
+                                <th>Lokasi</th>
+                                <th>Status</th>
+                                <th>Dibuat</th>
+                            </tr>
+                        </thead>
+                        <tbody id="latestResolvedTable">
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">Memuat data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch("{% url 'dashboard_data' %}")
+            .then(response => response.json())
+            .then(data => {
+                console.log('Dashboard JSON:', data);
+
+                renderStatusChart(data.status_distribution);
+                renderCategoryChart(data.category_distribution);
+                renderLatestReportedTable(data.latest_reported);
+                renderLatestResolvedTable(data.latest_resolved);
+            })
+            .catch(error => {
+                console.error('Gagal mengambil data dashboard:', error);
+
+                document.getElementById('latestReportedTable').innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center text-danger">Gagal memuat data.</td>
+                    </tr>
+                `;
+
+                document.getElementById('latestResolvedTable').innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center text-danger">Gagal memuat data.</td>
+                    </tr>
+                `;
+            });
+    });
+
+    function renderStatusChart(statusData) {
+        const ctx = document.getElementById('statusChart').getContext('2d');
+
+        const labelsWithPercentage = statusData.labels.map((label, index) => {
+            return `${label} (${statusData.percentages[index]}%)`;
+        });
+
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labelsWithPercentage,
+                datasets: [{
+                    data: statusData.counts,
+                    backgroundColor: [
+                        '#6c757d',
+                        '#0d6efd',
+                        '#ffc107',
+                        '#198754'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+
+    function renderCategoryChart(categoryData) {
+        const ctx = document.getElementById('categoryChart').getContext('2d');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: categoryData.labels,
+                datasets: [{
+                    label: 'Jumlah Laporan',
+                    data: categoryData.counts,
+                    backgroundColor: '#0d6efd',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+
+    function renderLatestReportedTable(reports) {
+        const tbody = document.getElementById('latestReportedTable');
+
+        if (!reports.length) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center text-muted">Belum ada data REPORTED.</td>
+                </tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = reports.map(report => `
+            <tr>
+                <td>${report.title}</td>
+                <td>${report.category}</td>
+                <td>${report.location}</td>
+                <td>${getStatusBadge(report.status)}</td>
+                <td>${formatDate(report.created_at)}</td>
+            </tr>
+        `).join('');
+    }
+
+    function renderLatestResolvedTable(reports) {
+        const tbody = document.getElementById('latestResolvedTable');
+
+        if (!reports.length) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center text-muted">Belum ada data RESOLVED.</td>
+                </tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = reports.map(report => `
+            <tr>
+                <td>${report.title}</td>
+                <td>${report.category}</td>
+                <td>${report.location}</td>
+                <td>${getStatusBadge(report.status)}</td>
+                <td>${formatDate(report.created_at)}</td>
+            </tr>
+        `).join('');
+    }
+
+    function getStatusBadge(status) {
+        if (status === 'REPORTED') {
+            return `<span class="badge bg-secondary">Reported</span>`;
+        } else if (status === 'VERIFIED') {
+            return `<span class="badge bg-primary">Verified</span>`;
+        } else if (status === 'IN_PROGRESS') {
+            return `<span class="badge bg-warning text-dark">In Progress</span>`;
+        } else if (status === 'RESOLVED') {
+            return `<span class="badge bg-success">Resolved</span>`;
+        }
+        return `<span class="badge bg-dark">${status}</span>`;
+    }
+
+    function formatDate(datetimeString) {
+        const date = new Date(datetimeString);
+        return date.toLocaleString('id-ID');
+    }
+</script>
+{% endblock %}

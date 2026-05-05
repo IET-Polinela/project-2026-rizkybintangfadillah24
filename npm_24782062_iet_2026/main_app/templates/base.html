@@ -54,6 +54,9 @@
                         <a class="nav-link" href="{% url 'home' %}">Home</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'report_list' %}">Reports</a>
                     </li>
                     <li class="nav-item">
@@ -120,7 +123,7 @@
 
                     if (submitBtn) {
                         submitBtn.disabled = true;
-                        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Loading...</span>';
+                        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Loading...';
                     }
 
                     setTimeout(function() {

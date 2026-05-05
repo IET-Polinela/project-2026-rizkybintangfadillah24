@@ -1,5 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views import View
@@ -94,3 +96,50 @@ class ReportUpdateStatusView(AdminRequiredMixin, View):
             )
 
         return redirect('report_list')
+
+
+class ReportSearchJsonView(View):
+    def get(self, request, *args, **kwargs):
+        query = request.GET.get('q', '').strip()
+
+        reports = Report.objects.all().order_by('-created_at')
+
+        if query:
+            reports = reports.filter(
+                Q(title__icontains=query) |
+                Q(category__icontains=query) |
+                Q(location__icontains=query) |
+                Q(status__icontains=query)
+            )
+
+        data = [
+            {
+                'id': report.id,
+                'title': report.title,
+                'category': report.category,
+                'location': report.location,
+                'status': report.status,
+                'status_display': report.get_status_display(),
+            }
+            for report in reports[:50]
+        ]
+
+        return JsonResponse({'reports': data})
+
+
+class ReportDetailJsonView(View):
+    def get(self, request, pk, *args, **kwargs):
+        report = get_object_or_404(Report, pk=pk)
+
+        data = {
+            'id': report.id,
+            'title': report.title,
+            'category': report.category,
+            'description': report.description,
+            'location': report.location,
+            'status': report.status,
+            'status_display': report.get_status_display(),
+            'created_at': report.created_at.isoformat(),
+        }
+
+        return JsonResponse(data)
