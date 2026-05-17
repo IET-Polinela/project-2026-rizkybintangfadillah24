@@ -55,7 +55,9 @@
                         <td>{{ report.category }}</td>
                         <td>{{ report.location }}</td>
                         <td>
-                            {% if report.status == 'REPORTED' %}
+                            {% if report.status == 'DRAFT' %}
+                                <span class="badge bg-light text-dark border status-badge">Draft</span>
+                            {% elif report.status == 'REPORTED' %}
                                 <span class="badge bg-secondary status-badge">Reported</span>
                             {% elif report.status == 'VERIFIED' %}
                                 <span class="badge bg-primary status-badge">Verified</span>
@@ -213,7 +215,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function getStatusBadge(status) {
-        if (status === 'REPORTED') {
+        if (status === 'DRAFT') {
+            return '<span class="badge bg-light text-dark border status-badge">Draft</span>';
+        } else if (status === 'REPORTED') {
             return '<span class="badge bg-secondary status-badge">Reported</span>';
         } else if (status === 'VERIFIED') {
             return '<span class="badge bg-primary status-badge">Verified</span>';
