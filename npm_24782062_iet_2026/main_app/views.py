@@ -33,7 +33,9 @@ class ReportListView(ListView):
     model = Report
     template_name = 'main_app/report_list.html'
     context_object_name = 'reports'
-    ordering = ['-created_at']
+
+    def get_queryset(self):
+        return Report.objects.exclude(status='DRAFT').order_by('-created_at')
 
 
 class ReportDetailView(DetailView):
@@ -102,7 +104,7 @@ class ReportSearchJsonView(View):
     def get(self, request, *args, **kwargs):
         query = request.GET.get('q', '').strip()
 
-        reports = Report.objects.all().order_by('-created_at')
+        reports = Report.objects.exclude(status='DRAFT').order_by('-created_at')
 
         if query:
             reports = reports.filter(
