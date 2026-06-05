@@ -12,9 +12,12 @@ function setupLoginForm() {
         const passwordInput = document.getElementById('password');
         const loginMessage = document.getElementById('loginMessage');
 
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+
         const payload = {
-            username: usernameInput.value.trim(),
-            password: passwordInput.value,
+            username: username,
+            password: password,
         };
 
         loginMessage.innerHTML = `
@@ -29,6 +32,9 @@ function setupLoginForm() {
             if (result.ok && result.status === 200) {
                 localStorage.setItem('access_token', result.data.access);
                 localStorage.setItem('refresh_token', result.data.refresh);
+                localStorage.setItem('username', username);
+
+                updateNavbarUsername();
 
                 loginMessage.innerHTML = `
                     <div class="alert alert-success">
@@ -67,10 +73,38 @@ function setupLogoutButton() {
     logoutButton.addEventListener('click', function () {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
+        localStorage.removeItem('username');
+
+        updateNavbarUsername();
+
         window.location.hash = '#login';
     });
 }
 
 function isAuthenticated() {
     return Boolean(localStorage.getItem('access_token'));
+}
+
+function getDisplayUsername() {
+    const username = localStorage.getItem('username');
+
+    if (username && username.trim() !== '') {
+        return username;
+    }
+
+    return 'Citizen';
+}
+
+function updateNavbarUsername() {
+    const navbarUsername = document.getElementById('navbarUsername');
+
+    if (!navbarUsername) {
+        return;
+    }
+
+    if (isAuthenticated()) {
+        navbarUsername.textContent = `Halo, ${getDisplayUsername()}`;
+    } else {
+        navbarUsername.textContent = '';
+    }
 }

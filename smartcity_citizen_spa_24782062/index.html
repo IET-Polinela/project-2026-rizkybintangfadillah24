@@ -9,27 +9,366 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
+        :root {
+            --primary-blue: #0d6efd;
+            --deep-blue: #0b3d91;
+            --soft-blue: #eaf3ff;
+            --cyan-blue: #38bdf8;
+            --glass-bg: rgba(255, 255, 255, 0.66);
+            --glass-bg-strong: rgba(255, 255, 255, 0.82);
+            --glass-border: rgba(255, 255, 255, 0.52);
+            --text-dark: #111827;
+            --text-muted: #64748b;
+            --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.10);
+            --shadow-blue: 0 18px 40px rgba(13, 110, 253, 0.18);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: #f8f9fa;
+            min-height: 100vh;
+            color: var(--text-dark);
+            background:
+                radial-gradient(circle at 8% 12%, rgba(56, 189, 248, 0.28), transparent 26%),
+                radial-gradient(circle at 92% 8%, rgba(13, 110, 253, 0.24), transparent 28%),
+                radial-gradient(circle at 50% 100%, rgba(14, 165, 233, 0.16), transparent 34%),
+                linear-gradient(135deg, #eef7ff 0%, #f8fbff 48%, #e7f0ff 100%);
+            background-attachment: fixed;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.35) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.35) 1px, transparent 1px);
+            background-size: 42px 42px;
+            opacity: 0.32;
+            mask-image: linear-gradient(to bottom, black, transparent 88%);
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, rgba(13, 110, 253, 0.90), rgba(11, 61, 145, 0.86)) !important;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 14px 35px rgba(13, 110, 253, 0.22);
+        }
+
+        .navbar-brand {
+            letter-spacing: 0.2px;
+            font-weight: 800;
+        }
+
+        .navbar .nav-link {
+            color: rgba(255, 255, 255, 0.78);
+            font-weight: 600;
+            border-radius: 999px;
+            padding-left: 0.85rem;
+            padding-right: 0.85rem;
+        }
+
+        .navbar .nav-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .navbar-username {
+            color: #ffffff;
+            font-weight: 800;
+            padding: 0.42rem 0.85rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.16);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        #logoutButton {
+            border-radius: 999px;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            font-weight: 700;
+            border-color: rgba(255, 255, 255, 0.58);
+        }
+
+        #logoutButton:hover {
+            background-color: #ffffff;
+            color: var(--primary-blue);
+        }
+
+        .dashboard-shell {
+            max-width: 1540px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .portal-card,
+        .report-card,
+        .modal-content {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: var(--shadow-soft);
         }
 
         .portal-card {
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
+            border-radius: 22px;
         }
 
-        .dashboard-card {
-            min-height: 180px;
+        .sidebar-create-button {
+            min-height: 62px;
+            font-weight: 850;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.38);
+            background: linear-gradient(135deg, #0d6efd, #2563eb, #38bdf8);
+            box-shadow: var(--shadow-blue);
         }
 
-        .nav-link {
-            cursor: pointer;
+        .sidebar-create-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 22px 46px rgba(13, 110, 253, 0.27);
+        }
+
+        .sidebar-title {
+            font-size: 0.78rem;
+            font-weight: 850;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: #1e3a8a;
+            margin-bottom: 0.8rem;
+        }
+
+        .summary-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+            font-size: 0.95rem;
+        }
+
+        .summary-row:last-child {
+            border-bottom: 0;
+        }
+
+        .summary-label {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        .summary-label i {
+            width: 27px;
+            height: 27px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.70);
+            border: 1px solid rgba(255, 255, 255, 0.70);
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.06);
+        }
+
+        .summary-badge {
+            min-width: 34px;
+            border-radius: 999px;
+            font-weight: 850;
+            padding: 0.42rem 0.65rem;
+        }
+
+        .report-board {
+            background-color: transparent;
+        }
+
+        .report-tabs {
+            gap: 0.65rem;
+            border-bottom: 0;
+        }
+
+        .report-tabs .nav-link {
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.72);
+            background: rgba(255, 255, 255, 0.62);
+            color: #0d6efd;
+            font-weight: 800;
+            padding: 0.82rem 1.2rem;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .report-tabs .nav-link:hover {
+            background: rgba(255, 255, 255, 0.82);
+            border-color: rgba(13, 110, 253, 0.25);
+        }
+
+        .report-tabs .nav-link.active {
+            background: linear-gradient(135deg, rgba(13, 110, 253, 0.96), rgba(37, 99, 235, 0.94), rgba(56, 189, 248, 0.92));
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.35);
+            box-shadow: 0 16px 32px rgba(13, 110, 253, 0.24);
+        }
+
+        .report-card {
+            border-radius: 24px;
+            min-height: 278px;
+            overflow: hidden;
+            background:
+                linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.56));
+            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+            position: relative;
+        }
+
+        .report-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 35%),
+                radial-gradient(circle at bottom right, rgba(13, 110, 253, 0.12), transparent 32%);
+            pointer-events: none;
+        }
+
+        .report-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.13);
+            border-color: rgba(13, 110, 253, 0.24);
+        }
+
+        .report-card .card-body {
+            display: flex;
+            flex-direction: column;
+            padding: 1.35rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .report-title {
+            font-size: 1.18rem;
+            font-weight: 900;
+            color: var(--text-dark);
+            letter-spacing: 0.1px;
+        }
+
+        .report-category {
+            font-size: 0.8rem;
+            color: #1e3a8a;
+            background: rgba(255, 255, 255, 0.70);
+            border: 1px solid rgba(191, 219, 254, 0.8);
+            border-radius: 999px;
+            padding: 0.28rem 0.7rem;
+            white-space: nowrap;
+            font-weight: 650;
+        }
+
+        .report-description {
+            min-height: 54px;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .report-meta {
+            font-size: 0.88rem;
+            color: #111827;
+        }
+
+        .small-divider {
+            border-top: 1px solid rgba(148, 163, 184, 0.25);
+            margin: 0.95rem 0;
+        }
+
+        .status-progress {
+            height: 9px;
+            background: rgba(226, 232, 240, 0.85);
+            border-radius: 999px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.08);
+        }
+
+        .progress-bar {
+            border-radius: 999px;
+        }
+
+        .progress-label {
+            font-size: 0.83rem;
+            font-weight: 850;
+            color: #0d6efd;
+        }
+
+        .badge {
+            border-radius: 999px;
+            padding: 0.5rem 0.72rem;
+            letter-spacing: 0.03em;
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+        }
+
+        .modal-content {
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.86);
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+        }
+
+        .modal-footer {
+            border-top: 1px solid rgba(148, 163, 184, 0.22);
+        }
+
+        .form-control {
+            border-radius: 15px;
+            border-color: rgba(148, 163, 184, 0.34);
+            padding: 0.76rem 0.9rem;
+            background: rgba(255, 255, 255, 0.72);
+        }
+
+        .form-control:focus {
+            border-color: rgba(13, 110, 253, 0.55);
+            box-shadow: 0 0 0 0.24rem rgba(13, 110, 253, 0.13);
+            background: rgba(255, 255, 255, 0.94);
+        }
+
+        .btn {
+            border-radius: 15px;
+            font-weight: 800;
+        }
+
+        .btn-outline-primary,
+        .btn-outline-secondary {
+            background: rgba(255, 255, 255, 0.48);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 991.98px) {
+            .navbar-username {
+                display: inline-block;
+                margin-top: 0.6rem;
+            }
+
+            .report-card {
+                min-height: auto;
+            }
+
+            .report-tabs .nav-link {
+                padding: 0.7rem 0.9rem;
+            }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-        <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid px-4">
             <a class="navbar-brand fw-semibold" href="#dashboard">
                 <i class="bi bi-buildings-fill me-2"></i>Smart City Portal
             </a>
@@ -47,17 +386,23 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarMenu">
-                <ul class="navbar-nav ms-auto" id="nav-menu">
+                <ul class="navbar-nav ms-auto align-items-lg-center" id="nav-menu">
                     <li class="nav-item">
                         <a class="nav-link" href="#login">
                             <i class="bi bi-box-arrow-in-right me-1"></i>Login
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="#dashboard">
                             <i class="bi bi-speedometer2 me-1"></i>Dashboard
                         </a>
                     </li>
+
+                    <li class="nav-item ms-lg-3 me-lg-2 mt-2 mt-lg-0">
+                        <span class="navbar-username" id="navbarUsername"></span>
+                    </li>
+
                     <li class="nav-item">
                         <button class="btn btn-outline-light btn-sm ms-lg-2 mt-2 mt-lg-0" id="logoutButton">
                             <i class="bi bi-box-arrow-right me-1"></i>Logout
@@ -68,12 +413,87 @@
         </div>
     </nav>
 
-    <main class="container py-4" id="app-content"></main>
+    <main class="container-fluid px-4 py-4" id="app-content"></main>
+
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reportModalLabel">
+                        <i class="bi bi-file-earmark-plus me-2"></i>Form Laporan
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="reportFormMessage"></div>
+
+                    <form id="reportForm">
+                        <div class="mb-3">
+                            <label for="reportTitle" class="form-label">Judul Laporan</label>
+                            <input
+                                type="text"
+                                id="reportTitle"
+                                class="form-control"
+                                placeholder="Masukkan judul laporan"
+                                required
+                            >
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="reportCategory" class="form-label">Kategori</label>
+                            <input
+                                type="text"
+                                id="reportCategory"
+                                class="form-control"
+                                placeholder="Contoh: Infrastruktur"
+                                required
+                            >
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="reportLocation" class="form-label">Lokasi</label>
+                            <input
+                                type="text"
+                                id="reportLocation"
+                                class="form-control"
+                                placeholder="Masukkan lokasi kejadian"
+                                required
+                            >
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="reportDescription" class="form-label">Deskripsi</label>
+                            <textarea
+                                id="reportDescription"
+                                class="form-control"
+                                rows="4"
+                                placeholder="Jelaskan laporan secara singkat"
+                                required
+                            ></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="saveDraftButton">
+                        <i class="bi bi-save me-1"></i>Simpan Draft
+                    </button>
+                    <button type="button" class="btn btn-primary" id="submitReportButton">
+                        <i class="bi bi-send me-1"></i>Ajukan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/api.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/router.js"></script>
+    <script src="js/api.js?v=15"></script>
+    <script src="js/auth.js?v=15"></script>
+    <script src="js/app.js?v=15"></script>
+    <script src="js/router.js?v=15"></script>
 </body>
 </html>
