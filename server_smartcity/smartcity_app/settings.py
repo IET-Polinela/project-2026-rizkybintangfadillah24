@@ -76,13 +76,17 @@ WSGI_APPLICATION = 'smartcity_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Natar_db6',
-        'USER': 'postgres',
-        'PASSWORD': '123',
+        'NAME': 'db_mhs10',
+        'USER': 'user_mhs10',
+        'PASSWORD': 'mhs10',
         'HOST': 'localhost',
         'PORT': '5432',
     }
 }
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://103.151.63.86:8010',
+]
 
 
 AUTH_PASSWORD_VALIDATORS = [
