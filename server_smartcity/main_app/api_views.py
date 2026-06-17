@@ -1,4 +1,5 @@
 from django.db.models import Q
+from drf_spectacular.utils import extend_schema
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -62,6 +63,7 @@ class ReportViewSet(viewsets.ModelViewSet):
             status='DRAFT'
         )
 
+    @extend_schema(exclude=True)
     @action(detail=True, methods=['post'], url_path='submit')
     def submit(self, request, pk=None):
         report = self.get_object()
