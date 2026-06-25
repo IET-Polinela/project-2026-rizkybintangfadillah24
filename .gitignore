@@ -1,0 +1,19 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Coverage
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+
+# Playwright
+test-results/
+playwright-report/
+
+# Local env/database
+.env
+*.sqlite3
