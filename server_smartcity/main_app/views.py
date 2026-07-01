@@ -1,11 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views import View
 from django.urls import reverse_lazy
+
 from .models import Report
 from .forms import ReportForm
 
@@ -23,10 +25,31 @@ class AdminRequiredMixin(LoginRequiredMixin):
             return self.handle_no_permission()
 
         if not request.user.is_admin:
-            messages.error(request, 'Akses ditolak. Hanya admin yang dapat mengakses fitur ini.')
+            messages.error(
+                request,
+                'Akses ditolak. Hanya admin yang dapat mengakses fitur ini.'
+            )
             return redirect('report_list')
 
         return super().dispatch(request, *args, **kwargs)
+
+
+class AdminContentMutationForbiddenMixin(AdminRequiredMixin):
+    """
+    Admin tetap dapat mengelola workflow status laporan,
+    tetapi tidak diperbolehkan mengubah isi atau menghapus laporan warga.
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return super().dispatch(request, *args, **kwargs)
+
+        if not request.user.is_admin:
+            return super().dispatch(request, *args, **kwargs)
+
+        raise PermissionDenied(
+            'Admin hanya dapat mengubah status workflow laporan.'
+        )
 
 
 class ReportListView(ListView):
@@ -55,7 +78,7 @@ class ReportCreateView(AdminRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ReportUpdateView(AdminRequiredMixin, UpdateView):
+class ReportUpdateView(AdminContentMutationForbiddenMixin, UpdateView):
     model = Report
     form_class = ReportForm
     template_name = 'main_app/edit_report.html'
@@ -67,7 +90,7 @@ class ReportUpdateView(AdminRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class ReportDeleteView(AdminRequiredMixin, DeleteView):
+class ReportDeleteView(AdminContentMutationForbiddenMixin, DeleteView):
     model = Report
     template_name = 'main_app/delete_report.html'
     context_object_name = 'report'
@@ -89,12 +112,19 @@ class ReportUpdateStatusView(AdminRequiredMixin, View):
             'IN_PROGRESS': 'RESOLVED',
         }
 
-        if report.status in valid_transitions and new_status == valid_transitions[report.status]:
+        if (
+            report.status in valid_transitions
+            and new_status == valid_transitions[report.status]
+        ):
             report.status = new_status
             report.save()
+
             messages.success(
                 request,
-                f'Status laporan "{report.title}" berhasil diubah menjadi {report.get_status_display()}.'
+                (
+                    f'Status laporan "{report.title}" berhasil diubah menjadi '
+                    f'{report.get_status_display()}.'
+                )
             )
 
         return redirect('report_list')
@@ -108,10 +138,10 @@ class ReportSearchJsonView(View):
 
         if query:
             reports = reports.filter(
-                Q(title__icontains=query) |
-                Q(category__icontains=query) |
-                Q(location__icontains=query) |
-                Q(status__icontains=query)
+                Q(title__icontains=query)
+                | Q(category__icontains=query)
+                | Q(location__icontains=query)
+                | Q(status__icontains=query)
             )
 
         data = [

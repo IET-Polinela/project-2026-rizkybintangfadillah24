@@ -230,7 +230,9 @@ class MainAppMonolithicViewsCoverageTests(TestCase):
         """
         Menguji endpoint search JSON dengan query yang cocok.
         """
-        response = self.client.get(reverse('report_search_json') + '?q=Monolitik')
+        response = self.client.get(
+            reverse('report_search_json') + '?q=Monolitik'
+        )
 
         self.assertEqual(response.status_code, 200)
 
@@ -243,7 +245,9 @@ class MainAppMonolithicViewsCoverageTests(TestCase):
         """
         Menguji search JSON tidak menampilkan laporan DRAFT.
         """
-        response = self.client.get(reverse('report_search_json') + '?q=Draft')
+        response = self.client.get(
+            reverse('report_search_json') + '?q=Draft'
+        )
 
         self.assertEqual(response.status_code, 200)
 
@@ -325,9 +329,9 @@ class MainAppMonolithicViewsCoverageTests(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
-    def test_report_update_view_admin_get(self):
+    def test_report_update_view_admin_get_forbidden(self):
         """
-        Menguji admin bisa membuka halaman edit laporan.
+        Menguji admin tidak boleh membuka halaman edit isi laporan.
         """
         self.client.login(username='admin_mono', password='Password123!')
 
@@ -335,17 +339,22 @@ class MainAppMonolithicViewsCoverageTests(TestCase):
             reverse('edit_report', kwargs={'pk': self.report.id})
         )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'main_app/edit_report.html')
+        self.assertEqual(response.status_code, 403)
 
-    def test_report_update_view_admin_post_valid(self):
+    def test_report_update_view_admin_post_forbidden_data_tetap(self):
         """
-        Menguji admin bisa memperbarui laporan melalui form monolitik.
+        Menguji admin tidak boleh mengubah isi laporan dan data tetap sama.
         """
         self.client.login(username='admin_mono', password='Password123!')
 
+        original_title = self.report.title
+        original_category = self.report.category
+        original_description = self.report.description
+        original_location = self.report.location
+        original_status = self.report.status
+
         payload = {
-            'title': 'Laporan Terupdate',
+            'title': 'Laporan Terupdate Oleh Admin',
             'category': 'Infrastruktur',
             'description': 'Deskripsi terupdate.',
             'location': 'Jakarta',
@@ -357,12 +366,14 @@ class MainAppMonolithicViewsCoverageTests(TestCase):
             payload,
         )
 
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('report_list'))
+        self.assertEqual(response.status_code, 403)
 
         self.report.refresh_from_db()
-        self.assertEqual(self.report.title, 'Laporan Terupdate')
-        self.assertEqual(self.report.location, 'Jakarta')
+        self.assertEqual(self.report.title, original_title)
+        self.assertEqual(self.report.category, original_category)
+        self.assertEqual(self.report.description, original_description)
+        self.assertEqual(self.report.location, original_location)
+        self.assertEqual(self.report.status, original_status)
 
     def test_report_delete_view_unauthenticated_redirect(self):
         """
@@ -386,9 +397,9 @@ class MainAppMonolithicViewsCoverageTests(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
-    def test_report_delete_view_admin_get(self):
+    def test_report_delete_view_admin_get_forbidden(self):
         """
-        Menguji admin bisa membuka halaman konfirmasi hapus laporan.
+        Menguji admin tidak boleh membuka halaman hapus laporan.
         """
         self.client.login(username='admin_mono', password='Password123!')
 
@@ -396,12 +407,11 @@ class MainAppMonolithicViewsCoverageTests(TestCase):
             reverse('delete_report', kwargs={'pk': self.report.id})
         )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'main_app/delete_report.html')
+        self.assertEqual(response.status_code, 403)
 
-    def test_report_delete_view_admin_post(self):
+    def test_report_delete_view_admin_post_forbidden_data_tetap(self):
         """
-        Menguji admin bisa menghapus laporan.
+        Menguji admin tidak boleh menghapus laporan dan data tetap tersedia.
         """
         self.client.login(username='admin_mono', password='Password123!')
 
@@ -409,9 +419,8 @@ class MainAppMonolithicViewsCoverageTests(TestCase):
             reverse('delete_report', kwargs={'pk': self.report.id})
         )
 
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('report_list'))
-        self.assertFalse(Report.objects.filter(id=self.report.id).exists())
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(Report.objects.filter(id=self.report.id).exists())
 
     def test_report_update_status_valid_transition(self):
         """

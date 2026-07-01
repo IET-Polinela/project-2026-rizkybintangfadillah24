@@ -45,7 +45,7 @@
                         <th>Kategori</th>
                         <th>Lokasi</th>
                         <th>Status</th>
-                        <th style="width: 320px;">Aksi</th>
+                        <th style="width: 260px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="reportTableBody">
@@ -77,16 +77,13 @@
                             </button>
 
                             {% if user.is_authenticated and user.is_admin %}
-                                <a href="{% url 'edit_report' report.pk %}" class="btn btn-sm btn-warning text-dark mb-1">
-                                    Edit
-                                </a>
-                                <a href="{% url 'delete_report' report.pk %}" class="btn btn-sm btn-danger mb-1">
-                                    Hapus
-                                </a>
-
                                 {% if report.status == 'REPORTED' %}
-                                <form action="{% url 'update_status' report.pk %}" method="post" class="d-inline"
-                                      onsubmit="return confirm('Yakin ingin mengubah status menjadi VERIFIED?');">
+                                <form
+                                    action="{% url 'update_status' report.pk %}"
+                                    method="post"
+                                    class="d-inline"
+                                    onsubmit="return confirm('Yakin ingin mengubah status menjadi VERIFIED?');"
+                                >
                                     {% csrf_token %}
                                     <input type="hidden" name="status" value="VERIFIED">
                                     <button type="submit" class="btn btn-sm btn-primary mb-1">
@@ -95,8 +92,12 @@
                                 </form>
 
                                 {% elif report.status == 'VERIFIED' %}
-                                <form action="{% url 'update_status' report.pk %}" method="post" class="d-inline"
-                                      onsubmit="return confirm('Yakin ingin mengubah status menjadi IN PROGRESS?');">
+                                <form
+                                    action="{% url 'update_status' report.pk %}"
+                                    method="post"
+                                    class="d-inline"
+                                    onsubmit="return confirm('Yakin ingin mengubah status menjadi IN PROGRESS?');"
+                                >
                                     {% csrf_token %}
                                     <input type="hidden" name="status" value="IN_PROGRESS">
                                     <button type="submit" class="btn btn-sm btn-warning text-dark mb-1">
@@ -105,8 +106,12 @@
                                 </form>
 
                                 {% elif report.status == 'IN_PROGRESS' %}
-                                <form action="{% url 'update_status' report.pk %}" method="post" class="d-inline"
-                                      onsubmit="return confirm('Yakin ingin mengubah status menjadi RESOLVED?');">
+                                <form
+                                    action="{% url 'update_status' report.pk %}"
+                                    method="post"
+                                    class="d-inline"
+                                    onsubmit="return confirm('Yakin ingin mengubah status menjadi RESOLVED?');"
+                                >
                                     {% csrf_token %}
                                     <input type="hidden" name="status" value="RESOLVED">
                                     <button type="submit" class="btn btn-sm btn-success mb-1">
@@ -125,13 +130,25 @@
 </div>
 
 <!-- Modal Detail -->
-<div class="modal fade" id="reportDetailModal" tabindex="-1" aria-labelledby="reportDetailModalLabel" aria-hidden="true">
+<div
+    class="modal fade"
+    id="reportDetailModal"
+    tabindex="-1"
+    aria-labelledby="reportDetailModalLabel"
+    aria-hidden="true"
+>
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Detail Laporan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="reportDetailModalLabel">Detail Laporan</h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
             </div>
+
             <div class="modal-body">
                 <h4 id="modalTitle" class="mb-3"></h4>
 
@@ -187,7 +204,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('searchInput');
     const tableBody = document.getElementById('reportTableBody');
     const detailModalElement = document.getElementById('reportDetailModal');
-    const detailModal = detailModalElement ? new bootstrap.Modal(detailModalElement) : null;
+    const detailModal = detailModalElement
+        ? new bootstrap.Modal(detailModalElement)
+        : null;
 
     const isAdmin = {% if user.is_authenticated and user.is_admin %}true{% else %}false{% endif %};
     const csrfToken = '{{ csrf_token }}';
@@ -198,6 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function debounce(func, delay) {
         let timeoutId;
+
         return function (...args) {
             clearTimeout(timeoutId);
             timeoutId = setTimeout(() => func.apply(this, args), delay);
@@ -205,7 +225,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function escapeHtml(text) {
-        if (text === null || text === undefined) return '';
+        if (text === null || text === undefined) {
+            return '';
+        }
+
         return String(text)
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
@@ -217,51 +240,89 @@ document.addEventListener('DOMContentLoaded', function () {
     function getStatusBadge(status) {
         if (status === 'DRAFT') {
             return '<span class="badge bg-light text-dark border status-badge">Draft</span>';
-        } else if (status === 'REPORTED') {
+        }
+
+        if (status === 'REPORTED') {
             return '<span class="badge bg-secondary status-badge">Reported</span>';
-        } else if (status === 'VERIFIED') {
+        }
+
+        if (status === 'VERIFIED') {
             return '<span class="badge bg-primary status-badge">Verified</span>';
-        } else if (status === 'IN_PROGRESS') {
+        }
+
+        if (status === 'IN_PROGRESS') {
             return '<span class="badge bg-warning text-dark status-badge">In Progress</span>';
-        } else if (status === 'RESOLVED') {
+        }
+
+        if (status === 'RESOLVED') {
             return '<span class="badge bg-success status-badge">Resolved</span>';
         }
+
         return `<span class="badge bg-dark status-badge">${escapeHtml(status)}</span>`;
     }
 
-    function getAdminActions(report) {
-        if (!isAdmin) return '';
+    function getWorkflowActions(report) {
+        if (!isAdmin) {
+            return '';
+        }
 
-        let actions = `
-            <a href="/edit/${report.id}/" class="btn btn-sm btn-warning text-dark mb-1">Edit</a>
-            <a href="/delete/${report.id}/" class="btn btn-sm btn-danger mb-1">Hapus</a>
-        `;
+        let actions = '';
 
         if (report.status === 'REPORTED') {
-            actions += `
-                <form action="/reports/${report.id}/update-status/" method="post" class="d-inline"
-                    onsubmit="return confirm('Yakin ingin mengubah status menjadi VERIFIED?');">
-                    <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
+            actions = `
+                <form
+                    action="/reports/${report.id}/update-status/"
+                    method="post"
+                    class="d-inline"
+                    onsubmit="return confirm('Yakin ingin mengubah status menjadi VERIFIED?');"
+                >
+                    <input
+                        type="hidden"
+                        name="csrfmiddlewaretoken"
+                        value="${csrfToken}"
+                    >
                     <input type="hidden" name="status" value="VERIFIED">
-                    <button type="submit" class="btn btn-sm btn-primary mb-1">Verifikasi</button>
+                    <button type="submit" class="btn btn-sm btn-primary mb-1">
+                        Verifikasi
+                    </button>
                 </form>
             `;
         } else if (report.status === 'VERIFIED') {
-            actions += `
-                <form action="/reports/${report.id}/update-status/" method="post" class="d-inline"
-                    onsubmit="return confirm('Yakin ingin mengubah status menjadi IN PROGRESS?');">
-                    <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
+            actions = `
+                <form
+                    action="/reports/${report.id}/update-status/"
+                    method="post"
+                    class="d-inline"
+                    onsubmit="return confirm('Yakin ingin mengubah status menjadi IN PROGRESS?');"
+                >
+                    <input
+                        type="hidden"
+                        name="csrfmiddlewaretoken"
+                        value="${csrfToken}"
+                    >
                     <input type="hidden" name="status" value="IN_PROGRESS">
-                    <button type="submit" class="btn btn-sm btn-warning text-dark mb-1">Proses</button>
+                    <button type="submit" class="btn btn-sm btn-warning text-dark mb-1">
+                        Proses
+                    </button>
                 </form>
             `;
         } else if (report.status === 'IN_PROGRESS') {
-            actions += `
-                <form action="/reports/${report.id}/update-status/" method="post" class="d-inline"
-                    onsubmit="return confirm('Yakin ingin mengubah status menjadi RESOLVED?');">
-                    <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
+            actions = `
+                <form
+                    action="/reports/${report.id}/update-status/"
+                    method="post"
+                    class="d-inline"
+                    onsubmit="return confirm('Yakin ingin mengubah status menjadi RESOLVED?');"
+                >
+                    <input
+                        type="hidden"
+                        name="csrfmiddlewaretoken"
+                        value="${csrfToken}"
+                    >
                     <input type="hidden" name="status" value="RESOLVED">
-                    <button type="submit" class="btn btn-sm btn-success mb-1">Selesaikan</button>
+                    <button type="submit" class="btn btn-sm btn-success mb-1">
+                        Selesaikan
+                    </button>
                 </form>
             `;
         }
@@ -273,7 +334,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!reports.length) {
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="5" class="text-center text-muted">Data tidak ditemukan.</td>
+                    <td colspan="5" class="text-center text-muted">
+                        Data tidak ditemukan.
+                    </td>
                 </tr>
             `;
             return;
@@ -293,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     >
                         Detail
                     </button>
-                    ${getAdminActions(report)}
+                    ${getWorkflowActions(report)}
                 </td>
             </tr>
         `).join('');
@@ -321,7 +384,9 @@ document.addEventListener('DOMContentLoaded', function () {
     tableBody.addEventListener('click', function (event) {
         const detailButton = event.target.closest('.detail-btn');
 
-        if (!detailButton) return;
+        if (!detailButton) {
+            return;
+        }
 
         const reportId = detailButton.dataset.id;
 
@@ -332,8 +397,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('modalCategory').textContent = data.category;
                 document.getElementById('modalLocation').textContent = data.location;
                 document.getElementById('modalDescription').textContent = data.description;
-                document.getElementById('modalCreatedAt').textContent = new Date(data.created_at).toLocaleString('id-ID');
-                document.getElementById('modalStatus').innerHTML = getStatusBadge(data.status);
+                document.getElementById('modalCreatedAt').textContent =
+                    new Date(data.created_at).toLocaleString('id-ID');
+                document.getElementById('modalStatus').innerHTML =
+                    getStatusBadge(data.status);
 
                 if (detailModal) {
                     detailModal.show();
