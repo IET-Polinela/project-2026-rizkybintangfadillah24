@@ -1,6 +1,295 @@
 {% extends 'base.html' %}
 
-{% block title %}Detail Laporan{% endblock %}
+{% block title %}Detail Laporan | Natar City{% endblock %}
+
+{% block extra_head %}
+<style>
+    .report-detail-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1.25rem;
+        margin-bottom: 1.45rem;
+    }
+
+    .report-detail-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.42rem;
+        margin-bottom: 0.5rem;
+        color: var(--app-primary);
+        font-size: 0.73rem;
+        font-weight: 800;
+        letter-spacing: 0.075em;
+        text-transform: uppercase;
+    }
+
+    .report-detail-subtitle {
+        max-width: 44rem;
+        color: var(--app-muted);
+        font-size: 0.91rem;
+        line-height: 1.65;
+    }
+
+    .report-status-overview {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        flex: 0 0 auto;
+        padding: 0.62rem 0.82rem;
+        border: 1px solid var(--app-border);
+        border-radius: 0.85rem;
+        background: #ffffff;
+        box-shadow: var(--app-shadow-sm);
+    }
+
+    .report-status-overview-label {
+        color: var(--app-muted);
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+    .report-main-card {
+        border-radius: 1.1rem;
+    }
+
+    .report-main-card .card-body {
+        padding: 1.65rem;
+    }
+
+    .report-title-box {
+        position: relative;
+        margin-bottom: 1.35rem;
+        padding: 1.35rem;
+        overflow: hidden;
+        border: 1px solid rgba(191, 219, 254, 0.9);
+        border-radius: 1rem;
+        background:
+            radial-gradient(
+                circle at right top,
+                rgba(147, 197, 253, 0.26),
+                transparent 15rem
+            ),
+            #f8fbff;
+    }
+
+    .report-title-box::after {
+        position: absolute;
+        top: -2rem;
+        right: -1.8rem;
+        width: 6rem;
+        height: 6rem;
+        border-radius: 999px;
+        background: rgba(147, 197, 253, 0.22);
+        content: "";
+    }
+
+    .report-title-box-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.8rem;
+        height: 2.8rem;
+        margin-bottom: 0.9rem;
+        border-radius: 0.82rem;
+        background: var(--app-primary);
+        color: #ffffff;
+        font-size: 1.1rem;
+    }
+
+    .report-title-box h2 {
+        position: relative;
+        z-index: 1;
+        max-width: 48rem;
+        margin-bottom: 0.35rem;
+        color: #18344e;
+        font-size: clamp(1.35rem, 2.5vw, 1.9rem);
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        line-height: 1.35;
+    }
+
+    .report-title-box p {
+        position: relative;
+        z-index: 1;
+        margin-bottom: 0;
+        color: var(--app-muted);
+        font-size: 0.86rem;
+    }
+
+    .detail-section-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.42rem;
+        margin-bottom: 0.8rem;
+        color: var(--app-primary);
+        font-size: 0.74rem;
+        font-weight: 800;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+    }
+
+    .detail-info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.95rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .detail-info-card {
+        min-height: 6.3rem;
+        padding: 1rem;
+        border: 1px solid var(--app-border);
+        border-radius: 0.9rem;
+        background: #ffffff;
+    }
+
+    .detail-info-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.2rem;
+        height: 2.2rem;
+        margin-bottom: 0.7rem;
+        border-radius: 0.68rem;
+        background: var(--app-primary-soft);
+        color: var(--app-primary);
+        font-size: 0.94rem;
+    }
+
+    .detail-info-label {
+        display: block;
+        margin-bottom: 0.3rem;
+        color: var(--app-muted);
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.055em;
+        text-transform: uppercase;
+    }
+
+    .detail-info-value {
+        color: var(--app-text);
+        font-size: 0.91rem;
+        font-weight: 700;
+        line-height: 1.55;
+        overflow-wrap: anywhere;
+    }
+
+    .detail-description-card {
+        padding: 1.15rem;
+        border: 1px solid var(--app-border);
+        border-radius: 0.9rem;
+        background: #fbfdff;
+    }
+
+    .detail-description-card p {
+        margin-bottom: 0;
+        color: #526170;
+        font-size: 0.92rem;
+        line-height: 1.8;
+        white-space: pre-line;
+    }
+
+    .workflow-card {
+        margin-top: 1.25rem;
+        padding: 1.2rem;
+        border: 1px solid rgba(191, 219, 254, 0.9);
+        border-radius: 0.95rem;
+        background:
+            radial-gradient(
+                circle at right bottom,
+                rgba(191, 219, 254, 0.28),
+                transparent 13rem
+            ),
+            #f8fbff;
+    }
+
+    .workflow-card-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    .workflow-card-heading {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.8rem;
+    }
+
+    .workflow-card-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 2.6rem;
+        height: 2.6rem;
+        border-radius: 0.8rem;
+        background: #dceeff;
+        color: var(--app-primary);
+        font-size: 1.05rem;
+    }
+
+    .workflow-card h3 {
+        margin-bottom: 0.24rem;
+        color: var(--app-text);
+        font-size: 0.96rem;
+        font-weight: 800;
+    }
+
+    .workflow-card p {
+        margin-bottom: 0;
+        color: var(--app-muted);
+        font-size: 0.84rem;
+        line-height: 1.55;
+    }
+
+    .detail-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .detail-policy-note {
+        display: inline-flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        max-width: 36rem;
+        color: var(--app-muted);
+        font-size: 0.79rem;
+        line-height: 1.55;
+    }
+
+    .detail-policy-note i {
+        margin-top: 0.08rem;
+        color: var(--app-primary);
+    }
+
+    @media (max-width: 767.98px) {
+        .report-detail-header,
+        .workflow-card-content,
+        .detail-footer {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .report-status-overview {
+            width: fit-content;
+        }
+
+        .detail-info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .workflow-card form .btn,
+        .detail-footer > .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <nav aria-label="breadcrumb">
@@ -8,62 +297,265 @@
         <li class="breadcrumb-item">
             <a href="{% url 'home' %}">Home</a>
         </li>
+
         <li class="breadcrumb-item">
             <a href="{% url 'report_list' %}">Reports</a>
         </li>
-        <li class="breadcrumb-item active">Detail Laporan</li>
+
+        <li class="breadcrumb-item active" aria-current="page">
+            Detail Laporan
+        </li>
     </ol>
 </nav>
 
-<div class="card shadow-sm">
-    <div class="card-body">
-        <h2 class="mb-4">Detail Laporan</h2>
-
-        <div class="row mb-3">
-            <div class="col-md-3 fw-bold">Judul</div>
-            <div class="col-md-9">{{ report.title }}</div>
+<section class="report-detail-header">
+    <div>
+        <div class="report-detail-kicker">
+            <i class="bi bi-file-earmark-text-fill"></i>
+            Informasi Laporan
         </div>
 
-        <div class="row mb-3">
-            <div class="col-md-3 fw-bold">Kategori</div>
-            <div class="col-md-9">{{ report.category }}</div>
-        </div>
+        <h1 class="section-heading mb-1">Detail Laporan</h1>
 
-        <div class="row mb-3">
-            <div class="col-md-3 fw-bold">Deskripsi</div>
-            <div class="col-md-9">{{ report.description }}</div>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-md-3 fw-bold">Lokasi</div>
-            <div class="col-md-9">{{ report.location }}</div>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-md-3 fw-bold">Status</div>
-            <div class="col-md-9">
-                {% if report.status == 'REPORTED' %}
-                    <span class="badge bg-secondary status-badge">Reported</span>
-                {% elif report.status == 'VERIFIED' %}
-                    <span class="badge bg-primary status-badge">Verified</span>
-                {% elif report.status == 'IN_PROGRESS' %}
-                    <span class="badge bg-warning text-dark status-badge">In Progress</span>
-                {% elif report.status == 'RESOLVED' %}
-                    <span class="badge bg-success status-badge">Resolved</span>
-                {% elif report.status == 'DRAFT' %}
-                    <span class="badge bg-light text-dark border status-badge">Draft</span>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-md-3 fw-bold">Dibuat Pada</div>
-            <div class="col-md-9">{{ report.created_at }}</div>
-        </div>
-
-        <a href="{% url 'report_list' %}" class="btn btn-secondary">
-            Kembali
-        </a>
+        <p class="report-detail-subtitle mb-0">
+            Tinjau informasi laporan secara lengkap sebelum melakukan pembaruan
+            status workflow.
+        </p>
     </div>
-</div>
+
+    <div class="report-status-overview">
+        <span class="report-status-overview-label">Status saat ini</span>
+
+        {% if report.status == 'DRAFT' %}
+            <span class="badge bg-light text-dark border status-badge">
+                Draft
+            </span>
+        {% elif report.status == 'REPORTED' %}
+            <span class="badge bg-secondary status-badge">
+                Reported
+            </span>
+        {% elif report.status == 'VERIFIED' %}
+            <span class="badge bg-primary status-badge">
+                Verified
+            </span>
+        {% elif report.status == 'IN_PROGRESS' %}
+            <span class="badge bg-warning text-dark status-badge">
+                In Progress
+            </span>
+        {% elif report.status == 'RESOLVED' %}
+            <span class="badge bg-success status-badge">
+                Resolved
+            </span>
+        {% endif %}
+    </div>
+</section>
+
+<section class="card report-main-card">
+    <div class="card-body">
+        <div class="report-title-box">
+            <span class="report-title-box-icon">
+                <i class="bi bi-clipboard2-check-fill"></i>
+            </span>
+
+            <h2>{{ report.title }}</h2>
+
+            <p>
+                Laporan dibuat pada {{ report.created_at|date:"d F Y, H:i" }}
+            </p>
+        </div>
+
+        <div class="detail-section-label">
+            <i class="bi bi-info-circle-fill"></i>
+            Informasi Utama
+        </div>
+
+        <div class="detail-info-grid">
+            <article class="detail-info-card">
+                <span class="detail-info-icon">
+                    <i class="bi bi-tags-fill"></i>
+                </span>
+
+                <span class="detail-info-label">Kategori</span>
+
+                <div class="detail-info-value">
+                    {{ report.category }}
+                </div>
+            </article>
+
+            <article class="detail-info-card">
+                <span class="detail-info-icon">
+                    <i class="bi bi-geo-alt-fill"></i>
+                </span>
+
+                <span class="detail-info-label">Lokasi</span>
+
+                <div class="detail-info-value">
+                    {{ report.location }}
+                </div>
+            </article>
+
+            <article class="detail-info-card">
+                <span class="detail-info-icon">
+                    <i class="bi bi-activity"></i>
+                </span>
+
+                <span class="detail-info-label">Status Workflow</span>
+
+                <div class="detail-info-value">
+                    {% if report.status == 'DRAFT' %}
+                        Draft
+                    {% elif report.status == 'REPORTED' %}
+                        Reported
+                    {% elif report.status == 'VERIFIED' %}
+                        Verified
+                    {% elif report.status == 'IN_PROGRESS' %}
+                        In Progress
+                    {% elif report.status == 'RESOLVED' %}
+                        Resolved
+                    {% endif %}
+                </div>
+            </article>
+
+            <article class="detail-info-card">
+                <span class="detail-info-icon">
+                    <i class="bi bi-calendar-check-fill"></i>
+                </span>
+
+                <span class="detail-info-label">Dibuat Pada</span>
+
+                <div class="detail-info-value">
+                    {{ report.created_at|date:"d F Y, H:i" }}
+                </div>
+            </article>
+        </div>
+
+        <div class="detail-section-label">
+            <i class="bi bi-card-text"></i>
+            Deskripsi Laporan
+        </div>
+
+        <div class="detail-description-card">
+            <p>{{ report.description }}</p>
+        </div>
+
+        {% if user.is_authenticated and user.is_admin %}
+            {% if report.status == 'REPORTED' %}
+                <section class="workflow-card">
+                    <div class="workflow-card-content">
+                        <div class="workflow-card-heading">
+                            <span class="workflow-card-icon">
+                                <i class="bi bi-patch-check-fill"></i>
+                            </span>
+
+                            <div>
+                                <h3>Laporan Menunggu Verifikasi</h3>
+                                <p>
+                                    Pastikan informasi laporan telah sesuai sebelum
+                                    mengubah status menjadi VERIFIED.
+                                </p>
+                            </div>
+                        </div>
+
+                        <form
+                            action="{% url 'update_status' report.pk %}"
+                            method="post"
+                            onsubmit="return confirm('Yakin ingin mengubah status laporan menjadi VERIFIED?');"
+                        >
+                            {% csrf_token %}
+                            <input type="hidden" name="status" value="VERIFIED">
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-patch-check"></i>
+                                Verifikasi Laporan
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+            {% elif report.status == 'VERIFIED' %}
+                <section class="workflow-card">
+                    <div class="workflow-card-content">
+                        <div class="workflow-card-heading">
+                            <span class="workflow-card-icon">
+                                <i class="bi bi-arrow-repeat"></i>
+                            </span>
+
+                            <div>
+                                <h3>Laporan Siap Diproses</h3>
+                                <p>
+                                    Ubah status menjadi IN PROGRESS ketika tindak lanjut
+                                    penanganan telah dimulai.
+                                </p>
+                            </div>
+                        </div>
+
+                        <form
+                            action="{% url 'update_status' report.pk %}"
+                            method="post"
+                            onsubmit="return confirm('Yakin ingin mengubah status laporan menjadi IN PROGRESS?');"
+                        >
+                            {% csrf_token %}
+                            <input type="hidden" name="status" value="IN_PROGRESS">
+
+                            <button type="submit" class="btn btn-warning text-dark">
+                                <i class="bi bi-arrow-repeat"></i>
+                                Mulai Proses
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+            {% elif report.status == 'IN_PROGRESS' %}
+                <section class="workflow-card">
+                    <div class="workflow-card-content">
+                        <div class="workflow-card-heading">
+                            <span class="workflow-card-icon">
+                                <i class="bi bi-check2-circle"></i>
+                            </span>
+
+                            <div>
+                                <h3>Penanganan Sedang Berjalan</h3>
+                                <p>
+                                    Selesaikan laporan setelah tindak lanjut dinyatakan
+                                    selesai dilakukan.
+                                </p>
+                            </div>
+                        </div>
+
+                        <form
+                            action="{% url 'update_status' report.pk %}"
+                            method="post"
+                            onsubmit="return confirm('Yakin ingin mengubah status laporan menjadi RESOLVED?');"
+                        >
+                            {% csrf_token %}
+                            <input type="hidden" name="status" value="RESOLVED">
+
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check2-circle"></i>
+                                Selesaikan Laporan
+                            </button>
+                        </form>
+                    </div>
+                </section>
+            {% endif %}
+        {% endif %}
+
+        <div class="detail-footer">
+            <a href="{% url 'report_list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i>
+                Kembali ke Reports
+            </a>
+
+            {% if user.is_authenticated and user.is_admin %}
+                <div class="detail-policy-note">
+                    <i class="bi bi-shield-lock-fill"></i>
+                    <span>
+                        Admin hanya dapat memperbarui status workflow. Isi laporan
+                        tidak dapat diedit atau dihapus melalui Portal Admin.
+                    </span>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
 {% endblock %}

@@ -1,39 +1,351 @@
 {% extends 'base.html' %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Login Admin | Natar City{% endblock %}
+
+{% block extra_head %}
+<style>
+    .login-page {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(100vh - 13rem);
+        padding: 1rem 0;
+    }
+
+    .login-layout {
+        width: 100%;
+        max-width: 62rem;
+        overflow: hidden;
+        border: 1px solid rgba(191, 219, 254, 0.9);
+        border-radius: 1.35rem;
+        background: #ffffff;
+        box-shadow: var(--app-shadow);
+    }
+
+    .login-intro {
+        position: relative;
+        min-height: 100%;
+        padding: 2.8rem;
+        overflow: hidden;
+        background:
+            radial-gradient(
+                circle at 78% 15%,
+                rgba(125, 211, 252, 0.35),
+                transparent 14rem
+            ),
+            linear-gradient(135deg, #08345d, #0f4c81);
+        color: #ffffff;
+    }
+
+    .login-intro::before,
+    .login-intro::after {
+        position: absolute;
+        border-radius: 999px;
+        content: "";
+        pointer-events: none;
+    }
+
+    .login-intro::before {
+        right: -4.5rem;
+        bottom: -5rem;
+        width: 15rem;
+        height: 15rem;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .login-intro::after {
+        top: 3rem;
+        right: 2rem;
+        width: 4rem;
+        height: 4rem;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .login-brand {
+        position: relative;
+        z-index: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 3.3rem;
+        height: 3.3rem;
+        margin-bottom: 1.6rem;
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        border-radius: 1rem;
+        background: rgba(255, 255, 255, 0.12);
+        font-size: 1.45rem;
+    }
+
+    .login-kicker {
+        position: relative;
+        z-index: 1;
+        margin-bottom: 0.7rem;
+        color: rgba(255, 255, 255, 0.75);
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .login-intro h1 {
+        position: relative;
+        z-index: 1;
+        margin-bottom: 0.95rem;
+        font-size: clamp(1.7rem, 3vw, 2.35rem);
+        font-weight: 800;
+        letter-spacing: -0.035em;
+        line-height: 1.2;
+    }
+
+    .login-intro p {
+        position: relative;
+        z-index: 1;
+        max-width: 23rem;
+        margin-bottom: 1.65rem;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 0.93rem;
+        line-height: 1.75;
+    }
+
+    .login-feature-list {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        gap: 0.75rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .login-feature-list li {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        color: rgba(255, 255, 255, 0.88);
+        font-size: 0.86rem;
+    }
+
+    .login-feature-list i {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.55rem;
+        height: 1.55rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        color: #d9efff;
+        font-size: 0.75rem;
+    }
+
+    .login-form-panel {
+        padding: 2.8rem;
+        background: #ffffff;
+    }
+
+    .login-form-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-bottom: 0.5rem;
+        color: var(--app-primary);
+        font-size: 0.74rem;
+        font-weight: 800;
+        letter-spacing: 0.075em;
+        text-transform: uppercase;
+    }
+
+    .login-form-panel h2 {
+        margin-bottom: 0.55rem;
+        color: var(--app-text);
+        font-size: 1.7rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+    }
+
+    .login-form-description {
+        margin-bottom: 1.75rem;
+        color: var(--app-muted);
+        font-size: 0.91rem;
+        line-height: 1.65;
+    }
+
+    .login-input-wrapper {
+        position: relative;
+    }
+
+    .login-input-icon {
+        position: absolute;
+        top: 50%;
+        left: 0.95rem;
+        z-index: 2;
+        color: #7b8794;
+        font-size: 0.98rem;
+        transform: translateY(-50%);
+    }
+
+    .login-input-wrapper .form-control {
+        padding-left: 2.8rem;
+    }
+
+    .login-submit {
+        width: 100%;
+        margin-top: 0.35rem;
+    }
+
+    .login-register-text {
+        margin-top: 1.35rem;
+        margin-bottom: 0;
+        color: var(--app-muted);
+        font-size: 0.86rem;
+        text-align: center;
+    }
+
+    .login-register-text a {
+        color: var(--app-primary);
+        font-weight: 700;
+    }
+
+    .login-register-text a:hover {
+        color: var(--app-primary-dark);
+        text-decoration: underline;
+    }
+
+    @media (max-width: 991.98px) {
+        .login-page {
+            min-height: auto;
+        }
+
+        .login-intro,
+        .login-form-panel {
+            padding: 2rem;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .login-intro {
+            min-height: auto;
+        }
+
+        .login-feature-list {
+            grid-template-columns: 1fr;
+        }
+
+        .login-form-panel {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-        <li class="breadcrumb-item active">Login</li>
-    </ol>
-</nav>
-
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h2 class="mb-4">Login</h2>
-
-                <form method="post" class="loading-form">
-                    {% csrf_token %}
-
-                    <div class="mb-3">
-                        <label for="id_username" class="form-label">Username</label>
-                        <input type="text" name="username" class="form-control" id="id_username" required>
+<section class="login-page">
+    <div class="login-layout">
+        <div class="row g-0">
+            <div class="col-lg-6">
+                <aside class="login-intro">
+                    <div class="login-brand">
+                        <i class="bi bi-buildings-fill"></i>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="id_password" class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control" id="id_password" required>
+                    <p class="login-kicker">Natar City Issue Tracker</p>
+
+                    <h1>Portal Administrasi Laporan Kota</h1>
+
+                    <p>
+                        Masuk untuk memantau laporan warga, melakukan verifikasi,
+                        serta mengelola progres penanganan hingga selesai.
+                    </p>
+
+                    <ul class="login-feature-list">
+                        <li>
+                            <i class="bi bi-bar-chart-line-fill"></i>
+                            Dashboard monitoring terpusat
+                        </li>
+
+                        <li>
+                            <i class="bi bi-shield-check"></i>
+                            Verifikasi laporan secara terarah
+                        </li>
+
+                        <li>
+                            <i class="bi bi-arrow-repeat"></i>
+                            Pengelolaan workflow transparan
+                        </li>
+                    </ul>
+                </aside>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="login-form-panel">
+                    <div class="login-form-kicker">
+                        <i class="bi bi-shield-lock-fill"></i>
+                        Akses sistem
                     </div>
 
-                    <button type="submit" class="btn btn-primary submit-btn">Login</button>
-                    <a href="{% url 'register' %}" class="btn btn-secondary">Daftar</a>
-                </form>
+                    <h2>Login Admin</h2>
+
+                    <p class="login-form-description">
+                        Masukkan kredensial akun Anda untuk mengakses Portal Admin.
+                    </p>
+
+                    <form method="post" class="loading-form">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label">
+                                Username
+                            </label>
+
+                            <div class="login-input-wrapper">
+                                <i class="bi bi-person login-input-icon"></i>
+
+                                <input
+                                    type="text"
+                                    name="username"
+                                    class="form-control"
+                                    id="id_username"
+                                    placeholder="Masukkan username"
+                                    autocomplete="username"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_password" class="form-label">
+                                Password
+                            </label>
+
+                            <div class="login-input-wrapper">
+                                <i class="bi bi-key login-input-icon"></i>
+
+                                <input
+                                    type="password"
+                                    name="password"
+                                    class="form-control"
+                                    id="id_password"
+                                    placeholder="Masukkan password"
+                                    autocomplete="current-password"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary submit-btn login-submit">
+                            <i class="bi bi-box-arrow-in-right"></i>
+                            Login ke Portal Admin
+                        </button>
+                    </form>
+
+                    <p class="login-register-text">
+                        Belum memiliki akun?
+                        <a href="{% url 'register' %}">Daftar di sini</a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 {% endblock %}

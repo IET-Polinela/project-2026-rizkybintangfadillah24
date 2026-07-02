@@ -1,59 +1,189 @@
 {% extends 'base.html' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Dashboard Admin | Natar City{% endblock %}
 
 {% block content %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-        <li class="breadcrumb-item active">Dashboard</li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'home' %}">Home</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            Dashboard
+        </li>
     </ol>
 </nav>
 
-<div class="mb-4">
-    <h2>Dashboard Statistik</h2>
-    <p class="text-muted mb-0">Ringkasan visual laporan berdasarkan data yang ada di sistem.</p>
-</div>
+<section class="dashboard-hero mb-4">
+    <div>
+        <div class="dashboard-kicker">
+            <i class="bi bi-bar-chart-line-fill"></i>
+            Portal Admin
+        </div>
 
-<div class="row g-4 mb-4">
-    <div class="col-lg-6">
-        <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <h5 class="card-title">Distribusi Status Laporan</h5>
-                <canvas id="statusChart"></canvas>
+        <h1 class="section-heading mb-2">Dashboard Monitoring Laporan</h1>
+
+        <p class="section-subtitle mb-0">
+            Pantau kondisi laporan warga, progres penanganan, dan ringkasan aktivitas terbaru
+            dalam satu halaman.
+        </p>
+    </div>
+
+    <a href="{% url 'report_list' %}" class="btn btn-primary dashboard-report-btn">
+        <i class="bi bi-clipboard-data"></i>
+        Kelola Laporan
+    </a>
+</section>
+
+<section class="row g-4 mb-4" aria-label="Ringkasan laporan">
+    <div class="col-sm-6 col-xl-3">
+        <div class="summary-card summary-total h-100">
+            <div class="summary-card-icon">
+                <i class="bi bi-collection-fill"></i>
+            </div>
+
+            <div>
+                <p class="summary-card-label">Total Laporan</p>
+                <h2 class="summary-card-value" id="totalReportsValue">0</h2>
+                <span class="summary-card-note">Seluruh data laporan</span>
             </div>
         </div>
     </div>
 
-    <div class="col-lg-6">
-        <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <h5 class="card-title">Distribusi Kategori Laporan</h5>
-                <canvas id="categoryChart"></canvas>
+    <div class="col-sm-6 col-xl-3">
+        <div class="summary-card summary-reported h-100">
+            <div class="summary-card-icon">
+                <i class="bi bi-exclamation-circle-fill"></i>
+            </div>
+
+            <div>
+                <p class="summary-card-label">Perlu Verifikasi</p>
+                <h2 class="summary-card-value" id="reportedValue">0</h2>
+                <span class="summary-card-note">Status REPORTED</span>
             </div>
         </div>
     </div>
-</div>
 
-<div class="row g-4">
-    <div class="col-lg-6">
-        <div class="card shadow-sm h-100">
+    <div class="col-sm-6 col-xl-3">
+        <div class="summary-card summary-processing h-100">
+            <div class="summary-card-icon">
+                <i class="bi bi-arrow-repeat"></i>
+            </div>
+
+            <div>
+                <p class="summary-card-label">Sedang Diproses</p>
+                <h2 class="summary-card-value" id="processingValue">0</h2>
+                <span class="summary-card-note">Verified &amp; In Progress</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="summary-card summary-resolved h-100">
+            <div class="summary-card-icon">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+
+            <div>
+                <p class="summary-card-label">Laporan Selesai</p>
+                <h2 class="summary-card-value" id="resolvedValue">0</h2>
+                <span class="summary-card-note">Status RESOLVED</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="row g-4 mb-4">
+    <div class="col-xl-5">
+        <div class="card dashboard-panel h-100">
             <div class="card-body">
-                <h5 class="card-title">5 Laporan Terakhir Dilaporkan (REPORTED)</h5>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover align-middle mb-0">
-                        <thead class="table-dark">
+                <div class="panel-heading">
+                    <div>
+                        <p class="panel-eyebrow">Ringkasan Progres</p>
+                        <h2 class="card-title mb-1">Distribusi Status Laporan</h2>
+                        <p class="panel-description mb-0">
+                            Proporsi laporan berdasarkan tahapan penanganan saat ini.
+                        </p>
+                    </div>
+
+                    <span class="panel-icon">
+                        <i class="bi bi-pie-chart-fill"></i>
+                    </span>
+                </div>
+
+                <div class="chart-container chart-container-status">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-7">
+        <div class="card dashboard-panel h-100">
+            <div class="card-body">
+                <div class="panel-heading">
+                    <div>
+                        <p class="panel-eyebrow">Klasifikasi Laporan</p>
+                        <h2 class="card-title mb-1">Distribusi Kategori Laporan</h2>
+                        <p class="panel-description mb-0">
+                            Kategori dengan jumlah laporan tertinggi ditampilkan di bagian atas.
+                        </p>
+                    </div>
+
+                    <span class="panel-icon">
+                        <i class="bi bi-bar-chart-fill"></i>
+                    </span>
+                </div>
+
+                <div class="chart-container chart-container-category">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="row g-4">
+    <div class="col-xl-6">
+        <div class="card dashboard-panel h-100">
+            <div class="card-body">
+                <div class="panel-heading mb-4">
+                    <div>
+                        <p class="panel-eyebrow">Butuh Tindakan</p>
+                        <h2 class="card-title mb-1">
+                            5 Laporan Terakhir Dilaporkan
+                        </h2>
+                        <p class="panel-description mb-0">
+                            Laporan berstatus REPORTED yang menunggu verifikasi admin.
+                        </p>
+                    </div>
+
+                    <span class="panel-icon panel-icon-warning">
+                        <i class="bi bi-hourglass-split"></i>
+                    </span>
+                </div>
+
+                <div class="table-responsive dashboard-table-wrapper">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
                             <tr>
-                                <th>Judul</th>
+                                <th>Judul Laporan</th>
                                 <th>Kategori</th>
                                 <th>Lokasi</th>
                                 <th>Status</th>
                                 <th>Dibuat</th>
                             </tr>
                         </thead>
+
                         <tbody id="latestReportedTable">
                             <tr>
-                                <td colspan="5" class="text-center text-muted">Memuat data...</td>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    <span
+                                        class="spinner-border spinner-border-sm me-2"
+                                        aria-hidden="true"
+                                    ></span>
+                                    Memuat data laporan...
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -62,24 +192,46 @@
         </div>
     </div>
 
-    <div class="col-lg-6">
-        <div class="card shadow-sm h-100">
+    <div class="col-xl-6">
+        <div class="card dashboard-panel h-100">
             <div class="card-body">
-                <h5 class="card-title">5 Laporan Terakhir Selesai (RESOLVED)</h5>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover align-middle mb-0">
-                        <thead class="table-dark">
+                <div class="panel-heading mb-4">
+                    <div>
+                        <p class="panel-eyebrow">Riwayat Penyelesaian</p>
+                        <h2 class="card-title mb-1">
+                            5 Laporan Terakhir Selesai
+                        </h2>
+                        <p class="panel-description mb-0">
+                            Laporan yang telah memperoleh status RESOLVED.
+                        </p>
+                    </div>
+
+                    <span class="panel-icon panel-icon-success">
+                        <i class="bi bi-check2-circle"></i>
+                    </span>
+                </div>
+
+                <div class="table-responsive dashboard-table-wrapper">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
                             <tr>
-                                <th>Judul</th>
+                                <th>Judul Laporan</th>
                                 <th>Kategori</th>
                                 <th>Lokasi</th>
                                 <th>Status</th>
                                 <th>Dibuat</th>
                             </tr>
                         </thead>
+
                         <tbody id="latestResolvedTable">
                             <tr>
-                                <td colspan="5" class="text-center text-muted">Memuat data...</td>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    <span
+                                        class="spinner-border spinner-border-sm me-2"
+                                        aria-hidden="true"
+                                    ></span>
+                                    Memuat data laporan...
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -87,66 +239,338 @@
             </div>
         </div>
     </div>
-</div>
+</section>
+{% endblock %}
 
+{% block extra_head %}
+<style>
+    .dashboard-hero {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        padding: 1.7rem 1.8rem;
+        border: 1px solid rgba(191, 219, 254, 0.95);
+        border-radius: 1.15rem;
+        background:
+            radial-gradient(
+                circle at right top,
+                rgba(147, 197, 253, 0.34),
+                transparent 18rem
+            ),
+            linear-gradient(115deg, #ffffff, #f3f8fd);
+        box-shadow: var(--app-shadow-sm);
+    }
+
+    .dashboard-kicker,
+    .panel-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-bottom: 0.55rem;
+        color: var(--app-primary);
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+    }
+
+    .dashboard-report-btn {
+        flex-shrink: 0;
+    }
+
+    .summary-card {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        min-height: 9rem;
+        padding: 1.25rem;
+        overflow: hidden;
+        border: 1px solid var(--app-border);
+        border-radius: var(--app-radius);
+        background: #ffffff;
+        box-shadow: var(--app-shadow-sm);
+    }
+
+    .summary-card::after {
+        position: absolute;
+        top: -2.1rem;
+        right: -2rem;
+        width: 6.5rem;
+        height: 6.5rem;
+        border-radius: 999px;
+        content: "";
+        opacity: 0.45;
+    }
+
+    .summary-card-icon {
+        position: relative;
+        z-index: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 3.15rem;
+        height: 3.15rem;
+        border-radius: 0.95rem;
+        font-size: 1.35rem;
+    }
+
+    .summary-card-label {
+        position: relative;
+        z-index: 1;
+        margin-bottom: 0.18rem;
+        color: var(--app-muted);
+        font-size: 0.84rem;
+        font-weight: 700;
+    }
+
+    .summary-card-value {
+        position: relative;
+        z-index: 1;
+        margin-bottom: 0.08rem;
+        color: var(--app-text);
+        font-size: 1.8rem;
+        font-weight: 800;
+        line-height: 1.15;
+    }
+
+    .summary-card-note {
+        position: relative;
+        z-index: 1;
+        color: var(--app-muted);
+        font-size: 0.75rem;
+    }
+
+    .summary-total .summary-card-icon {
+        background: #eaf3fb;
+        color: #0f4c81;
+    }
+
+    .summary-total::after {
+        background: #bfdbfe;
+    }
+
+    .summary-reported .summary-card-icon {
+        background: #fff5db;
+        color: #b77900;
+    }
+
+    .summary-reported::after {
+        background: #fde68a;
+    }
+
+    .summary-processing .summary-card-icon {
+        background: #e9efff;
+        color: #4956b8;
+    }
+
+    .summary-processing::after {
+        background: #c7d2fe;
+    }
+
+    .summary-resolved .summary-card-icon {
+        background: #e7f7ee;
+        color: #198754;
+    }
+
+    .summary-resolved::after {
+        background: #bbf7d0;
+    }
+
+    .dashboard-panel {
+        border-radius: 1.05rem;
+    }
+
+    .panel-heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    .panel-description {
+        max-width: 34rem;
+        color: var(--app-muted);
+        font-size: 0.85rem;
+        line-height: 1.55;
+    }
+
+    .panel-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 2.65rem;
+        height: 2.65rem;
+        border-radius: 0.8rem;
+        background: var(--app-primary-soft);
+        color: var(--app-primary);
+        font-size: 1.1rem;
+    }
+
+    .panel-icon-warning {
+        background: #fff5db;
+        color: #b77900;
+    }
+
+    .panel-icon-success {
+        background: #e7f7ee;
+        color: #198754;
+    }
+
+    .chart-container {
+        position: relative;
+    }
+
+    .chart-container-status {
+        min-height: 19rem;
+    }
+
+    .chart-container-category {
+        min-height: 19rem;
+    }
+
+    .dashboard-table-wrapper {
+        box-shadow: none;
+    }
+
+    .dashboard-table-wrapper td:first-child {
+        min-width: 13rem;
+        color: #26384a;
+        font-weight: 700;
+    }
+
+    .dashboard-table-wrapper td {
+        color: #526170;
+        font-size: 0.84rem;
+    }
+
+    @media (max-width: 767.98px) {
+        .dashboard-hero {
+            align-items: flex-start;
+            flex-direction: column;
+            padding: 1.35rem;
+        }
+
+        .dashboard-report-btn {
+            width: 100%;
+        }
+
+        .summary-card {
+            min-height: 7.8rem;
+        }
+
+        .chart-container-status,
+        .chart-container-category {
+            min-height: 17rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        fetch("{% url 'dashboard_data' %}")
-            .then(response => response.json())
-            .then(data => {
-                console.log('Dashboard JSON:', data);
+    let statusChartInstance = null;
+    let categoryChartInstance = null;
 
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("{% url 'dashboard_data' %}")
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error("Respons dashboard tidak berhasil dimuat.");
+                }
+
+                return response.json();
+            })
+            .then(function (data) {
+                renderSummaryCards(data.summary);
                 renderStatusChart(data.status_distribution);
                 renderCategoryChart(data.category_distribution);
                 renderLatestReportedTable(data.latest_reported);
                 renderLatestResolvedTable(data.latest_resolved);
             })
-            .catch(error => {
-                console.error('Gagal mengambil data dashboard:', error);
+            .catch(function (error) {
+                console.error("Gagal mengambil data dashboard:", error);
 
-                document.getElementById('latestReportedTable').innerHTML = `
-                    <tr>
-                        <td colspan="5" class="text-center text-danger">Gagal memuat data.</td>
-                    </tr>
-                `;
-
-                document.getElementById('latestResolvedTable').innerHTML = `
-                    <tr>
-                        <td colspan="5" class="text-center text-danger">Gagal memuat data.</td>
-                    </tr>
-                `;
+                showDashboardLoadError();
             });
     });
 
-    function renderStatusChart(statusData) {
-        const ctx = document.getElementById('statusChart').getContext('2d');
+    function renderSummaryCards(summary) {
+        document.getElementById("totalReportsValue").textContent =
+            formatNumber(summary.total_reports);
 
-        const labelsWithPercentage = statusData.labels.map((label, index) => {
-            return `${label} (${statusData.percentages[index]}%)`;
+        document.getElementById("reportedValue").textContent =
+            formatNumber(summary.reported);
+
+        document.getElementById("processingValue").textContent =
+            formatNumber(summary.processing);
+
+        document.getElementById("resolvedValue").textContent =
+            formatNumber(summary.resolved);
+    }
+
+    function renderStatusChart(statusData) {
+        const canvas = document.getElementById("statusChart");
+        const ctx = canvas.getContext("2d");
+
+        if (statusChartInstance) {
+            statusChartInstance.destroy();
+        }
+
+        const labelsWithPercentage = statusData.labels.map(function (label, index) {
+            return label + " (" + statusData.percentages[index] + "%)";
         });
 
-        new Chart(ctx, {
-            type: 'doughnut',
+        statusChartInstance = new Chart(ctx, {
+            type: "doughnut",
             data: {
                 labels: labelsWithPercentage,
                 datasets: [{
                     data: statusData.counts,
                     backgroundColor: [
-                        '#6c757d',
-                        '#0d6efd',
-                        '#ffc107',
-                        '#198754'
+                        "#7b8794",
+                        "#2673b9",
+                        "#e7a717",
+                        "#198754"
                     ],
-                    borderWidth: 1
+                    borderColor: "#ffffff",
+                    borderWidth: 4,
+                    hoverOffset: 8
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
+                cutout: "64%",
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        position: "bottom",
+                        labels: {
+                            boxWidth: 12,
+                            boxHeight: 12,
+                            padding: 16,
+                            color: "#526170",
+                            font: {
+                                size: 12,
+                                family: "Inter, system-ui, sans-serif"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const count = context.raw || 0;
+                                const percentage = statusData.percentages[context.dataIndex];
+
+                                return " " + context.label.split(" (")[0] +
+                                    ": " + count + " laporan (" + percentage + "%)";
+                            }
+                        }
                     }
                 }
             }
@@ -154,32 +578,81 @@
     }
 
     function renderCategoryChart(categoryData) {
-        const ctx = document.getElementById('categoryChart').getContext('2d');
+        const canvas = document.getElementById("categoryChart");
+        const ctx = canvas.getContext("2d");
 
-        new Chart(ctx, {
-            type: 'bar',
+        if (categoryChartInstance) {
+            categoryChartInstance.destroy();
+        }
+
+        const chartLabels = categoryData.labels.map(function (label) {
+            return wrapChartLabel(label, 22);
+        });
+
+        categoryChartInstance = new Chart(ctx, {
+            type: "bar",
             data: {
-                labels: categoryData.labels,
+                labels: chartLabels,
                 datasets: [{
-                    label: 'Jumlah Laporan',
+                    label: "Jumlah Laporan",
                     data: categoryData.counts,
-                    backgroundColor: '#0d6efd',
-                    borderWidth: 1
+                    backgroundColor: "#2673b9",
+                    hoverBackgroundColor: "#0f4c81",
+                    borderRadius: 8,
+                    borderSkipped: false,
+                    maxBarThickness: 34
                 }]
             },
             options: {
+                indexAxis: "y",
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
-                    y: {
+                    x: {
                         beginAtZero: true,
+                        grid: {
+                            color: "rgba(107, 114, 128, 0.12)"
+                        },
+                        border: {
+                            display: false
+                        },
                         ticks: {
-                            precision: 0
+                            precision: 0,
+                            color: "#6b7280",
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false
+                        },
+                        border: {
+                            display: false
+                        },
+                        ticks: {
+                            color: "#415466",
+                            font: {
+                                size: 11,
+                                weight: "600"
+                            }
                         }
                     }
                 },
                 plugins: {
                     legend: {
                         display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function (context) {
+                                return categoryData.labels[context[0].dataIndex];
+                            },
+                            label: function (context) {
+                                return " Jumlah laporan: " + context.raw;
+                            }
+                        }
                     }
                 }
             }
@@ -187,67 +660,157 @@
     }
 
     function renderLatestReportedTable(reports) {
-        const tbody = document.getElementById('latestReportedTable');
+        const tbody = document.getElementById("latestReportedTable");
 
         if (!reports.length) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="5" class="text-center text-muted">Belum ada data REPORTED.</td>
-                </tr>
-            `;
+            tbody.innerHTML = createEmptyTableRow(
+                "Belum ada laporan yang menunggu verifikasi.",
+                "bi-inbox"
+            );
             return;
         }
 
-        tbody.innerHTML = reports.map(report => `
-            <tr>
-                <td>${report.title}</td>
-                <td>${report.category}</td>
-                <td>${report.location}</td>
-                <td>${getStatusBadge(report.status)}</td>
-                <td>${formatDate(report.created_at)}</td>
-            </tr>
-        `).join('');
+        tbody.innerHTML = reports.map(function (report) {
+            return createReportTableRow(report);
+        }).join("");
     }
 
     function renderLatestResolvedTable(reports) {
-        const tbody = document.getElementById('latestResolvedTable');
+        const tbody = document.getElementById("latestResolvedTable");
 
         if (!reports.length) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="5" class="text-center text-muted">Belum ada data RESOLVED.</td>
-                </tr>
-            `;
+            tbody.innerHTML = createEmptyTableRow(
+                "Belum ada laporan yang telah diselesaikan.",
+                "bi-check2-circle"
+            );
             return;
         }
 
-        tbody.innerHTML = reports.map(report => `
+        tbody.innerHTML = reports.map(function (report) {
+            return createReportTableRow(report);
+        }).join("");
+    }
+
+    function createReportTableRow(report) {
+        return `
             <tr>
-                <td>${report.title}</td>
-                <td>${report.category}</td>
-                <td>${report.location}</td>
+                <td>${escapeHtml(report.title)}</td>
+                <td>${escapeHtml(report.category)}</td>
+                <td>${escapeHtml(report.location)}</td>
                 <td>${getStatusBadge(report.status)}</td>
                 <td>${formatDate(report.created_at)}</td>
             </tr>
-        `).join('');
+        `;
+    }
+
+    function createEmptyTableRow(message, iconClass) {
+        return `
+            <tr>
+                <td colspan="5">
+                    <div class="empty-state">
+                        <i class="bi ${iconClass}"></i>
+                        ${escapeHtml(message)}
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+
+    function showDashboardLoadError() {
+        const errorRow = `
+            <tr>
+                <td colspan="5" class="text-center text-danger py-4">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    Gagal memuat data dashboard. Silakan muat ulang halaman.
+                </td>
+            </tr>
+        `;
+
+        document.getElementById("latestReportedTable").innerHTML = errorRow;
+        document.getElementById("latestResolvedTable").innerHTML = errorRow;
     }
 
     function getStatusBadge(status) {
-        if (status === 'REPORTED') {
-            return `<span class="badge bg-secondary">Reported</span>`;
-        } else if (status === 'VERIFIED') {
-            return `<span class="badge bg-primary">Verified</span>`;
-        } else if (status === 'IN_PROGRESS') {
-            return `<span class="badge bg-warning text-dark">In Progress</span>`;
-        } else if (status === 'RESOLVED') {
-            return `<span class="badge bg-success">Resolved</span>`;
-        }
-        return `<span class="badge bg-dark">${status}</span>`;
+        const statusMap = {
+            "REPORTED": {
+                label: "Reported",
+                className: "bg-secondary"
+            },
+            "VERIFIED": {
+                label: "Verified",
+                className: "bg-primary"
+            },
+            "IN_PROGRESS": {
+                label: "In Progress",
+                className: "bg-warning text-dark"
+            },
+            "RESOLVED": {
+                label: "Resolved",
+                className: "bg-success"
+            }
+        };
+
+        const currentStatus = statusMap[status] || {
+            label: status,
+            className: "bg-dark"
+        };
+
+        return `
+            <span class="badge ${currentStatus.className}">
+                ${escapeHtml(currentStatus.label)}
+            </span>
+        `;
     }
 
     function formatDate(datetimeString) {
         const date = new Date(datetimeString);
-        return date.toLocaleString('id-ID');
+
+        return date.toLocaleString("id-ID", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    }
+
+    function formatNumber(number) {
+        return new Intl.NumberFormat("id-ID").format(number || 0);
+    }
+
+    function wrapChartLabel(label, maxLength) {
+        if (label.length <= maxLength) {
+            return label;
+        }
+
+        const words = label.split(" ");
+        const lines = [];
+        let currentLine = "";
+
+        words.forEach(function (word) {
+            const nextLine = currentLine
+                ? currentLine + " " + word
+                : word;
+
+            if (nextLine.length > maxLength && currentLine) {
+                lines.push(currentLine);
+                currentLine = word;
+            } else {
+                currentLine = nextLine;
+            }
+        });
+
+        if (currentLine) {
+            lines.push(currentLine);
+        }
+
+        return lines;
+    }
+
+    function escapeHtml(value) {
+        const div = document.createElement("div");
+        div.textContent = value || "";
+        return div.innerHTML;
     }
 </script>
 {% endblock %}

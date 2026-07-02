@@ -1,6 +1,365 @@
 {% extends 'base.html' %}
 
-{% block title %}Daftar Laporan{% endblock %}
+{% block title %}Kelola Laporan | Natar City{% endblock %}
+
+{% block extra_head %}
+<style>
+    .reports-page-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .reports-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-bottom: 0.5rem;
+        color: var(--app-primary);
+        font-size: 0.73rem;
+        font-weight: 800;
+        letter-spacing: 0.075em;
+        text-transform: uppercase;
+    }
+
+    .reports-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 2.1rem;
+        height: 2.1rem;
+        margin-left: 0.45rem;
+        padding: 0 0.65rem;
+        border-radius: 999px;
+        background: var(--app-primary-soft);
+        color: var(--app-primary);
+        font-size: 0.78rem;
+        font-weight: 800;
+        vertical-align: middle;
+    }
+
+    .reports-action-group {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 0.65rem;
+    }
+
+    .reports-action-group .btn {
+        white-space: nowrap;
+    }
+
+    .search-card {
+        margin-bottom: 1.25rem;
+        border-color: rgba(191, 219, 254, 0.9);
+        background:
+            radial-gradient(
+                circle at right top,
+                rgba(191, 219, 254, 0.3),
+                transparent 16rem
+            ),
+            #ffffff;
+    }
+
+    .search-card-body {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .search-icon-box {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 2.8rem;
+        height: 2.8rem;
+        border-radius: 0.85rem;
+        background: var(--app-primary-soft);
+        color: var(--app-primary);
+        font-size: 1.15rem;
+    }
+
+    .search-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .search-label {
+        display: block;
+        margin-bottom: 0.32rem;
+        color: var(--app-text);
+        font-size: 0.9rem;
+        font-weight: 800;
+    }
+
+    .search-helper {
+        margin-bottom: 0.65rem;
+        color: var(--app-muted);
+        font-size: 0.82rem;
+    }
+
+    .search-input-wrapper {
+        position: relative;
+    }
+
+    .search-input-wrapper .form-control {
+        padding-right: 2.7rem;
+    }
+
+    .search-input-icon {
+        position: absolute;
+        top: 50%;
+        right: 0.9rem;
+        color: #7b8794;
+        font-size: 0.95rem;
+        transform: translateY(-50%);
+    }
+
+    .reports-table-card {
+        border-radius: 1.05rem;
+    }
+
+    .reports-table-heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .reports-table-heading h2 {
+        margin-bottom: 0.3rem;
+        color: var(--app-text);
+        font-size: 1.08rem;
+        font-weight: 800;
+    }
+
+    .reports-table-heading p {
+        margin-bottom: 0;
+        color: var(--app-muted);
+        font-size: 0.84rem;
+    }
+
+    .reports-table-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 2.6rem;
+        height: 2.6rem;
+        border-radius: 0.82rem;
+        background: var(--app-primary-soft);
+        color: var(--app-primary);
+        font-size: 1.08rem;
+    }
+
+    .reports-table-wrapper {
+        box-shadow: none;
+    }
+
+    .reports-table-wrapper th:nth-child(1) {
+        min-width: 14rem;
+    }
+
+    .reports-table-wrapper th:nth-child(2) {
+        min-width: 9rem;
+    }
+
+    .reports-table-wrapper th:nth-child(3) {
+        min-width: 10rem;
+    }
+
+    .reports-table-wrapper th:nth-child(4) {
+        min-width: 7.5rem;
+    }
+
+    .reports-table-wrapper th:nth-child(5) {
+        min-width: 13.5rem;
+    }
+
+    .report-title-cell {
+        color: #26384a;
+        font-weight: 800;
+    }
+
+    .report-category-cell,
+    .report-location-cell {
+        color: #526170;
+    }
+
+    .report-action-cell {
+        white-space: nowrap;
+    }
+
+    .report-action-cell .btn {
+        min-height: 2rem;
+        padding: 0.42rem 0.65rem;
+        border-radius: 0.58rem;
+        font-size: 0.78rem;
+    }
+
+    .btn-detail {
+        border-color: #d8e8f6;
+        background: #edf6fe;
+        color: var(--app-primary);
+    }
+
+    .btn-detail:hover,
+    .btn-detail:focus {
+        border-color: var(--app-primary);
+        background: var(--app-primary);
+        color: #ffffff;
+    }
+
+    .workflow-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.28rem;
+        margin-right: 0.4rem;
+        color: #7b8794;
+        font-size: 0.72rem;
+        font-weight: 700;
+    }
+
+    .empty-reports-card {
+        padding: 2.7rem 1.25rem;
+        text-align: center;
+    }
+
+    .empty-reports-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 4.4rem;
+        height: 4.4rem;
+        margin-bottom: 1.1rem;
+        border-radius: 1.25rem;
+        background: var(--app-primary-soft);
+        color: var(--app-primary);
+        font-size: 1.9rem;
+    }
+
+    .empty-reports-card h2 {
+        margin-bottom: 0.5rem;
+        color: var(--app-text);
+        font-size: 1.25rem;
+        font-weight: 800;
+    }
+
+    .empty-reports-card p {
+        max-width: 32rem;
+        margin: 0 auto 1.35rem;
+        color: var(--app-muted);
+        font-size: 0.9rem;
+        line-height: 1.7;
+    }
+
+    .report-detail-modal .modal-content {
+        overflow: hidden;
+        border: 0;
+        border-radius: 1.15rem;
+        box-shadow: 0 20px 50px rgba(15, 76, 129, 0.2);
+    }
+
+    .report-detail-modal .modal-header {
+        padding: 1.15rem 1.3rem;
+        border-bottom: 1px solid var(--app-border);
+        background: #f7fbff;
+    }
+
+    .report-detail-modal .modal-title {
+        color: var(--app-text);
+        font-size: 1.05rem;
+        font-weight: 800;
+    }
+
+    .report-detail-modal .modal-body {
+        padding: 1.4rem;
+    }
+
+    .modal-report-title {
+        margin-bottom: 1.2rem;
+        color: #18344e;
+        font-size: 1.35rem;
+        font-weight: 800;
+        line-height: 1.35;
+    }
+
+    .modal-detail-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.85rem;
+        margin-bottom: 1rem;
+    }
+
+    .modal-detail-item {
+        padding: 0.85rem;
+        border: 1px solid var(--app-border);
+        border-radius: 0.82rem;
+        background: #fbfdff;
+    }
+
+    .modal-detail-label {
+        display: block;
+        margin-bottom: 0.35rem;
+        color: var(--app-muted);
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.055em;
+        text-transform: uppercase;
+    }
+
+    .modal-detail-value {
+        color: var(--app-text);
+        font-size: 0.88rem;
+        font-weight: 700;
+        line-height: 1.5;
+    }
+
+    .modal-description-box {
+        padding: 1rem;
+        border: 1px solid var(--app-border);
+        border-radius: 0.82rem;
+        background: #fbfdff;
+    }
+
+    .modal-description-box p {
+        margin-bottom: 0;
+        color: #526170;
+        font-size: 0.9rem;
+        line-height: 1.72;
+        white-space: pre-line;
+    }
+
+    @media (max-width: 767.98px) {
+        .reports-page-header,
+        .search-card-body {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .reports-action-group {
+            justify-content: flex-start;
+        }
+
+        .reports-action-group .btn {
+            flex: 1;
+        }
+
+        .search-icon-box {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+
+        .modal-detail-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <nav aria-label="breadcrumb">
@@ -8,408 +367,562 @@
         <li class="breadcrumb-item">
             <a href="{% url 'home' %}">Home</a>
         </li>
-        <li class="breadcrumb-item active">Reports</li>
+        <li class="breadcrumb-item active" aria-current="page">
+            Reports
+        </li>
     </ol>
 </nav>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="mb-0">Daftar Laporan</h2>
+<section class="reports-page-header">
+    <div>
+        <div class="reports-kicker">
+            <i class="bi bi-clipboard-data-fill"></i>
+            Portal Admin
+        </div>
+
+        <h1 class="section-heading mb-1">
+            Kelola Laporan
+            <span class="reports-count">{{ reports|length }}</span>
+        </h1>
+
+        <p class="section-subtitle mb-0">
+            Tinjau detail laporan warga dan kelola progres workflow penanganannya.
+        </p>
+    </div>
 
     {% if user.is_authenticated and user.is_admin %}
-    <a href="{% url 'add_report' %}" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i> Tambah Laporan
-    </a>
+        <div class="reports-action-group">
+            <a href="{% url 'add_report' %}" class="btn btn-outline-primary">
+                <i class="bi bi-plus-circle"></i>
+                Tambah Laporan Internal
+            </a>
+
+            <a href="{% url 'dashboard' %}" class="btn btn-primary">
+                <i class="bi bi-grid-1x2-fill"></i>
+                Dashboard
+            </a>
+        </div>
     {% endif %}
-</div>
+</section>
 
 {% if reports %}
-<div class="card shadow-sm mb-3">
-    <div class="card-body">
-        <label for="searchInput" class="form-label fw-semibold">Live Search</label>
-        <input
-            type="text"
-            id="searchInput"
-            class="form-control"
-            placeholder="Cari judul, kategori, lokasi, atau status..."
-        >
-    </div>
-</div>
+    <section class="card search-card">
+        <div class="card-body">
+            <div class="search-card-body">
+                <span class="search-icon-box" aria-hidden="true">
+                    <i class="bi bi-search"></i>
+                </span>
 
-<div class="card shadow-sm">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover align-middle mb-0">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Judul</th>
-                        <th>Kategori</th>
-                        <th>Lokasi</th>
-                        <th>Status</th>
-                        <th style="width: 260px;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="reportTableBody">
-                    {% for report in reports %}
-                    <tr>
-                        <td>{{ report.title }}</td>
-                        <td>{{ report.category }}</td>
-                        <td>{{ report.location }}</td>
-                        <td>
-                            {% if report.status == 'DRAFT' %}
-                                <span class="badge bg-light text-dark border status-badge">Draft</span>
-                            {% elif report.status == 'REPORTED' %}
-                                <span class="badge bg-secondary status-badge">Reported</span>
-                            {% elif report.status == 'VERIFIED' %}
-                                <span class="badge bg-primary status-badge">Verified</span>
-                            {% elif report.status == 'IN_PROGRESS' %}
-                                <span class="badge bg-warning text-dark status-badge">In Progress</span>
-                            {% elif report.status == 'RESOLVED' %}
-                                <span class="badge bg-success status-badge">Resolved</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <button
-                                type="button"
-                                class="btn btn-sm btn-info text-white mb-1 detail-btn"
-                                data-id="{{ report.pk }}"
-                            >
-                                Detail
-                            </button>
+                <div class="search-content">
+                    <label for="searchInput" class="search-label">
+                        Live Search Laporan
+                    </label>
 
-                            {% if user.is_authenticated and user.is_admin %}
-                                {% if report.status == 'REPORTED' %}
-                                <form
-                                    action="{% url 'update_status' report.pk %}"
-                                    method="post"
-                                    class="d-inline"
-                                    onsubmit="return confirm('Yakin ingin mengubah status menjadi VERIFIED?');"
-                                >
-                                    {% csrf_token %}
-                                    <input type="hidden" name="status" value="VERIFIED">
-                                    <button type="submit" class="btn btn-sm btn-primary mb-1">
-                                        Verifikasi
-                                    </button>
-                                </form>
+                    <p class="search-helper">
+                        Cari berdasarkan judul, kategori, lokasi, atau status laporan.
+                    </p>
 
-                                {% elif report.status == 'VERIFIED' %}
-                                <form
-                                    action="{% url 'update_status' report.pk %}"
-                                    method="post"
-                                    class="d-inline"
-                                    onsubmit="return confirm('Yakin ingin mengubah status menjadi IN PROGRESS?');"
-                                >
-                                    {% csrf_token %}
-                                    <input type="hidden" name="status" value="IN_PROGRESS">
-                                    <button type="submit" class="btn btn-sm btn-warning text-dark mb-1">
-                                        Proses
-                                    </button>
-                                </form>
+                    <div class="search-input-wrapper">
+                        <input
+                            type="text"
+                            id="searchInput"
+                            class="form-control"
+                            placeholder="Contoh: lampu jalan, infrastruktur, Natar, reported..."
+                            autocomplete="off"
+                        >
 
-                                {% elif report.status == 'IN_PROGRESS' %}
-                                <form
-                                    action="{% url 'update_status' report.pk %}"
-                                    method="post"
-                                    class="d-inline"
-                                    onsubmit="return confirm('Yakin ingin mengubah status menjadi RESOLVED?');"
-                                >
-                                    {% csrf_token %}
-                                    <input type="hidden" name="status" value="RESOLVED">
-                                    <button type="submit" class="btn btn-sm btn-success mb-1">
-                                        Selesaikan
-                                    </button>
-                                </form>
-                                {% endif %}
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Detail -->
-<div
-    class="modal fade"
-    id="reportDetailModal"
-    tabindex="-1"
-    aria-labelledby="reportDetailModalLabel"
-    aria-hidden="true"
->
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reportDetailModalLabel">Detail Laporan</h5>
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                ></button>
-            </div>
-
-            <div class="modal-body">
-                <h4 id="modalTitle" class="mb-3"></h4>
-
-                <div class="row mb-2">
-                    <div class="col-md-3 fw-bold">Kategori</div>
-                    <div class="col-md-9" id="modalCategory"></div>
-                </div>
-
-                <div class="row mb-2">
-                    <div class="col-md-3 fw-bold">Lokasi</div>
-                    <div class="col-md-9" id="modalLocation"></div>
-                </div>
-
-                <div class="row mb-2">
-                    <div class="col-md-3 fw-bold">Status</div>
-                    <div class="col-md-9" id="modalStatus"></div>
-                </div>
-
-                <div class="row mb-2">
-                    <div class="col-md-3 fw-bold">Dibuat Pada</div>
-                    <div class="col-md-9" id="modalCreatedAt"></div>
-                </div>
-
-                <div class="row mb-2">
-                    <div class="col-md-3 fw-bold">Deskripsi</div>
-                    <div class="col-md-9" id="modalDescription"></div>
+                        <i class="bi bi-search search-input-icon" aria-hidden="true"></i>
+                    </div>
                 </div>
             </div>
         </div>
+    </section>
+
+    <section class="card reports-table-card">
+        <div class="card-body">
+            <div class="reports-table-heading">
+                <div>
+                    <h2>Daftar Laporan Masuk</h2>
+                    <p>
+                        Gunakan tombol detail untuk melihat informasi lengkap dan tombol workflow
+                        untuk memperbarui status laporan.
+                    </p>
+                </div>
+
+                <span class="reports-table-icon" aria-hidden="true">
+                    <i class="bi bi-list-check"></i>
+                </span>
+            </div>
+
+            <div class="table-responsive reports-table-wrapper">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Judul Laporan</th>
+                            <th>Kategori</th>
+                            <th>Lokasi</th>
+                            <th>Status</th>
+                            <th>Aksi Admin</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="reportTableBody">
+                        {% for report in reports %}
+                            <tr>
+                                <td class="report-title-cell">{{ report.title }}</td>
+
+                                <td class="report-category-cell">
+                                    {{ report.category }}
+                                </td>
+
+                                <td class="report-location-cell">
+                                    {{ report.location }}
+                                </td>
+
+                                <td>
+                                    {% if report.status == 'DRAFT' %}
+                                        <span class="badge bg-light text-dark border status-badge">
+                                            Draft
+                                        </span>
+                                    {% elif report.status == 'REPORTED' %}
+                                        <span class="badge bg-secondary status-badge">
+                                            Reported
+                                        </span>
+                                    {% elif report.status == 'VERIFIED' %}
+                                        <span class="badge bg-primary status-badge">
+                                            Verified
+                                        </span>
+                                    {% elif report.status == 'IN_PROGRESS' %}
+                                        <span class="badge bg-warning text-dark status-badge">
+                                            In Progress
+                                        </span>
+                                    {% elif report.status == 'RESOLVED' %}
+                                        <span class="badge bg-success status-badge">
+                                            Resolved
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td class="report-action-cell">
+                                    <button
+                                        type="button"
+                                        class="btn btn-detail detail-btn"
+                                        data-id="{{ report.pk }}"
+                                    >
+                                        <i class="bi bi-eye"></i>
+                                        Detail
+                                    </button>
+
+                                    {% if user.is_authenticated and user.is_admin %}
+                                        {% if report.status == 'REPORTED' %}
+                                            <form
+                                                action="{% url 'update_status' report.pk %}"
+                                                method="post"
+                                                class="d-inline"
+                                                onsubmit="return confirm('Yakin ingin mengubah status laporan menjadi VERIFIED?');"
+                                            >
+                                                {% csrf_token %}
+                                                <input type="hidden" name="status" value="VERIFIED">
+
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="bi bi-patch-check"></i>
+                                                    Verifikasi
+                                                </button>
+                                            </form>
+
+                                        {% elif report.status == 'VERIFIED' %}
+                                            <form
+                                                action="{% url 'update_status' report.pk %}"
+                                                method="post"
+                                                class="d-inline"
+                                                onsubmit="return confirm('Yakin ingin mengubah status laporan menjadi IN PROGRESS?');"
+                                            >
+                                                {% csrf_token %}
+                                                <input type="hidden" name="status" value="IN_PROGRESS">
+
+                                                <button type="submit" class="btn btn-warning text-dark">
+                                                    <i class="bi bi-arrow-repeat"></i>
+                                                    Proses
+                                                </button>
+                                            </form>
+
+                                        {% elif report.status == 'IN_PROGRESS' %}
+                                            <form
+                                                action="{% url 'update_status' report.pk %}"
+                                                method="post"
+                                                class="d-inline"
+                                                onsubmit="return confirm('Yakin ingin mengubah status laporan menjadi RESOLVED?');"
+                                            >
+                                                {% csrf_token %}
+                                                <input type="hidden" name="status" value="RESOLVED">
+
+                                                <button type="submit" class="btn btn-success">
+                                                    <i class="bi bi-check2-circle"></i>
+                                                    Selesaikan
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <div
+        class="modal fade report-detail-modal"
+        id="reportDetailModal"
+        tabindex="-1"
+        aria-labelledby="reportDetailModalLabel"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="reportDetailModalLabel">
+                        Detail Laporan
+                    </h2>
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Tutup"
+                    ></button>
+                </div>
+
+                <div class="modal-body">
+                    <h3 id="modalTitle" class="modal-report-title"></h3>
+
+                    <div class="modal-detail-grid">
+                        <div class="modal-detail-item">
+                            <span class="modal-detail-label">Kategori</span>
+                            <div id="modalCategory" class="modal-detail-value"></div>
+                        </div>
+
+                        <div class="modal-detail-item">
+                            <span class="modal-detail-label">Lokasi</span>
+                            <div id="modalLocation" class="modal-detail-value"></div>
+                        </div>
+
+                        <div class="modal-detail-item">
+                            <span class="modal-detail-label">Status</span>
+                            <div id="modalStatus" class="modal-detail-value"></div>
+                        </div>
+
+                        <div class="modal-detail-item">
+                            <span class="modal-detail-label">Dibuat Pada</span>
+                            <div id="modalCreatedAt" class="modal-detail-value"></div>
+                        </div>
+                    </div>
+
+                    <div class="modal-description-box">
+                        <span class="modal-detail-label">Deskripsi Laporan</span>
+                        <p id="modalDescription"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
 {% else %}
-<div class="card shadow-sm text-center">
-    <div class="card-body py-5">
-        <i class="bi bi-inbox display-4 text-muted"></i>
-        <h4 class="mt-3">Belum ada laporan</h4>
-        <p class="text-muted">
-            Saat ini belum ada data laporan. Silakan tambahkan laporan baru untuk mulai menggunakan sistem.
-        </p>
+    <section class="card">
+        <div class="empty-reports-card">
+            <span class="empty-reports-icon" aria-hidden="true">
+                <i class="bi bi-inbox"></i>
+            </span>
 
-        {% if user.is_authenticated and user.is_admin %}
-        <a href="{% url 'add_report' %}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Tambah Laporan
-        </a>
-        {% endif %}
-    </div>
-</div>
+            <h2>Belum Ada Laporan Masuk</h2>
+
+            <p>
+                Belum ada laporan yang dapat dikelola. Laporan warga yang sudah diajukan
+                akan muncul pada halaman ini untuk proses verifikasi dan tindak lanjut.
+            </p>
+
+            {% if user.is_authenticated and user.is_admin %}
+                <a href="{% url 'add_report' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-plus-circle"></i>
+                    Tambah Laporan Internal
+                </a>
+            {% endif %}
+        </div>
+    </section>
 {% endif %}
+{% endblock %}
 
+{% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const searchInput = document.getElementById('searchInput');
-    const tableBody = document.getElementById('reportTableBody');
-    const detailModalElement = document.getElementById('reportDetailModal');
-    const detailModal = detailModalElement
-        ? new bootstrap.Modal(detailModalElement)
-        : null;
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("searchInput");
+        const tableBody = document.getElementById("reportTableBody");
+        const detailModalElement = document.getElementById("reportDetailModal");
+        const detailModal = detailModalElement
+            ? new bootstrap.Modal(detailModalElement)
+            : null;
 
-    const isAdmin = {% if user.is_authenticated and user.is_admin %}true{% else %}false{% endif %};
-    const csrfToken = '{{ csrf_token }}';
+        const isAdmin = {% if user.is_authenticated and user.is_admin %}true{% else %}false{% endif %};
+        const csrfToken = "{{ csrf_token }}";
 
-    if (!tableBody) {
-        return;
-    }
-
-    function debounce(func, delay) {
-        let timeoutId;
-
-        return function (...args) {
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => func.apply(this, args), delay);
-        };
-    }
-
-    function escapeHtml(text) {
-        if (text === null || text === undefined) {
-            return '';
+        if (!tableBody) {
+            return;
         }
 
-        return String(text)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
+        function debounce(func, delay) {
+            let timeoutId;
 
-    function getStatusBadge(status) {
-        if (status === 'DRAFT') {
-            return '<span class="badge bg-light text-dark border status-badge">Draft</span>';
+            return function (...args) {
+                clearTimeout(timeoutId);
+
+                timeoutId = setTimeout(function () {
+                    func.apply(this, args);
+                }, delay);
+            };
         }
 
-        if (status === 'REPORTED') {
-            return '<span class="badge bg-secondary status-badge">Reported</span>';
+        function escapeHtml(text) {
+            if (text === null || text === undefined) {
+                return "";
+            }
+
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
         }
 
-        if (status === 'VERIFIED') {
-            return '<span class="badge bg-primary status-badge">Verified</span>';
+        function getStatusBadge(status) {
+            const statusMap = {
+                DRAFT: {
+                    label: "Draft",
+                    className: "bg-light text-dark border"
+                },
+                REPORTED: {
+                    label: "Reported",
+                    className: "bg-secondary"
+                },
+                VERIFIED: {
+                    label: "Verified",
+                    className: "bg-primary"
+                },
+                IN_PROGRESS: {
+                    label: "In Progress",
+                    className: "bg-warning text-dark"
+                },
+                RESOLVED: {
+                    label: "Resolved",
+                    className: "bg-success"
+                }
+            };
+
+            const currentStatus = statusMap[status] || {
+                label: status,
+                className: "bg-dark"
+            };
+
+            return `
+                <span class="badge ${currentStatus.className} status-badge">
+                    ${escapeHtml(currentStatus.label)}
+                </span>
+            `;
         }
 
-        if (status === 'IN_PROGRESS') {
-            return '<span class="badge bg-warning text-dark status-badge">In Progress</span>';
-        }
+        function getWorkflowAction(report) {
+            if (!isAdmin) {
+                return "";
+            }
 
-        if (status === 'RESOLVED') {
-            return '<span class="badge bg-success status-badge">Resolved</span>';
-        }
+            const statusConfig = {
+                REPORTED: {
+                    nextStatus: "VERIFIED",
+                    label: "Verifikasi",
+                    icon: "bi-patch-check",
+                    className: "btn-primary",
+                    message: "Yakin ingin mengubah status laporan menjadi VERIFIED?"
+                },
+                VERIFIED: {
+                    nextStatus: "IN_PROGRESS",
+                    label: "Proses",
+                    icon: "bi-arrow-repeat",
+                    className: "btn-warning text-dark",
+                    message: "Yakin ingin mengubah status laporan menjadi IN PROGRESS?"
+                },
+                IN_PROGRESS: {
+                    nextStatus: "RESOLVED",
+                    label: "Selesaikan",
+                    icon: "bi-check2-circle",
+                    className: "btn-success",
+                    message: "Yakin ingin mengubah status laporan menjadi RESOLVED?"
+                }
+            };
 
-        return `<span class="badge bg-dark status-badge">${escapeHtml(status)}</span>`;
-    }
+            const currentStatus = statusConfig[report.status];
 
-    function getWorkflowActions(report) {
-        if (!isAdmin) {
-            return '';
-        }
+            if (!currentStatus) {
+                return "";
+            }
 
-        let actions = '';
+            const actionUrl = `/reports/${report.id}/update-status/`;
 
-        if (report.status === 'REPORTED') {
-            actions = `
+            return `
                 <form
-                    action="/reports/${report.id}/update-status/"
+                    action="${actionUrl}"
                     method="post"
                     class="d-inline"
-                    onsubmit="return confirm('Yakin ingin mengubah status menjadi VERIFIED?');"
+                    onsubmit="return confirm('${currentStatus.message}');"
                 >
                     <input
                         type="hidden"
                         name="csrfmiddlewaretoken"
                         value="${csrfToken}"
                     >
-                    <input type="hidden" name="status" value="VERIFIED">
-                    <button type="submit" class="btn btn-sm btn-primary mb-1">
-                        Verifikasi
-                    </button>
-                </form>
-            `;
-        } else if (report.status === 'VERIFIED') {
-            actions = `
-                <form
-                    action="/reports/${report.id}/update-status/"
-                    method="post"
-                    class="d-inline"
-                    onsubmit="return confirm('Yakin ingin mengubah status menjadi IN PROGRESS?');"
-                >
                     <input
                         type="hidden"
-                        name="csrfmiddlewaretoken"
-                        value="${csrfToken}"
+                        name="status"
+                        value="${currentStatus.nextStatus}"
                     >
-                    <input type="hidden" name="status" value="IN_PROGRESS">
-                    <button type="submit" class="btn btn-sm btn-warning text-dark mb-1">
-                        Proses
-                    </button>
-                </form>
-            `;
-        } else if (report.status === 'IN_PROGRESS') {
-            actions = `
-                <form
-                    action="/reports/${report.id}/update-status/"
-                    method="post"
-                    class="d-inline"
-                    onsubmit="return confirm('Yakin ingin mengubah status menjadi RESOLVED?');"
-                >
-                    <input
-                        type="hidden"
-                        name="csrfmiddlewaretoken"
-                        value="${csrfToken}"
-                    >
-                    <input type="hidden" name="status" value="RESOLVED">
-                    <button type="submit" class="btn btn-sm btn-success mb-1">
-                        Selesaikan
+
+                    <button type="submit" class="btn ${currentStatus.className}">
+                        <i class="bi ${currentStatus.icon}"></i>
+                        ${currentStatus.label}
                     </button>
                 </form>
             `;
         }
 
-        return actions;
-    }
-
-    function renderTableRows(reports) {
-        if (!reports.length) {
-            tableBody.innerHTML = `
+        function createReportRow(report) {
+            return `
                 <tr>
-                    <td colspan="5" class="text-center text-muted">
-                        Data tidak ditemukan.
+                    <td class="report-title-cell">${escapeHtml(report.title)}</td>
+                    <td class="report-category-cell">${escapeHtml(report.category)}</td>
+                    <td class="report-location-cell">${escapeHtml(report.location)}</td>
+                    <td>${getStatusBadge(report.status)}</td>
+                    <td class="report-action-cell">
+                        <button
+                            type="button"
+                            class="btn btn-detail detail-btn"
+                            data-id="${report.id}"
+                        >
+                            <i class="bi bi-eye"></i>
+                            Detail
+                        </button>
+
+                        ${getWorkflowAction(report)}
                     </td>
                 </tr>
             `;
-            return;
         }
 
-        tableBody.innerHTML = reports.map(report => `
-            <tr>
-                <td>${escapeHtml(report.title)}</td>
-                <td>${escapeHtml(report.category)}</td>
-                <td>${escapeHtml(report.location)}</td>
-                <td>${getStatusBadge(report.status)}</td>
-                <td>
-                    <button
-                        type="button"
-                        class="btn btn-sm btn-info text-white mb-1 detail-btn"
-                        data-id="${report.id}"
-                    >
-                        Detail
-                    </button>
-                    ${getWorkflowActions(report)}
-                </td>
-            </tr>
-        `).join('');
-    }
+        function renderTableRows(reports) {
+            if (!reports.length) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <i class="bi bi-search"></i>
+                                Data laporan tidak ditemukan.
+                            </div>
+                        </td>
+                    </tr>
+                `;
 
-    function doSearch() {
-        const query = searchInput.value.trim();
+                return;
+            }
 
-        fetch(`/reports/search/?q=${encodeURIComponent(query)}`)
-            .then(response => response.json())
-            .then(data => {
-                renderTableRows(data.reports);
-            })
-            .catch(error => {
-                console.error('Gagal melakukan live search:', error);
-            });
-    }
-
-    const debouncedSearch = debounce(doSearch, 300);
-
-    if (searchInput) {
-        searchInput.addEventListener('input', debouncedSearch);
-    }
-
-    tableBody.addEventListener('click', function (event) {
-        const detailButton = event.target.closest('.detail-btn');
-
-        if (!detailButton) {
-            return;
+            tableBody.innerHTML = reports.map(function (report) {
+                return createReportRow(report);
+            }).join("");
         }
 
-        const reportId = detailButton.dataset.id;
+        function doSearch() {
+            const query = searchInput.value.trim();
 
-        fetch(`/reports/${reportId}/json/`)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('modalTitle').textContent = data.title;
-                document.getElementById('modalCategory').textContent = data.category;
-                document.getElementById('modalLocation').textContent = data.location;
-                document.getElementById('modalDescription').textContent = data.description;
-                document.getElementById('modalCreatedAt').textContent =
-                    new Date(data.created_at).toLocaleString('id-ID');
-                document.getElementById('modalStatus').innerHTML =
-                    getStatusBadge(data.status);
+            fetch(`/reports/search/?q=${encodeURIComponent(query)}`)
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error("Pencarian laporan gagal.");
+                    }
 
-                if (detailModal) {
-                    detailModal.show();
-                }
-            })
-            .catch(error => {
-                console.error('Gagal mengambil detail laporan:', error);
+                    return response.json();
+                })
+                .then(function (data) {
+                    renderTableRows(data.reports);
+                })
+                .catch(function (error) {
+                    console.error("Gagal melakukan live search:", error);
+
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="text-center text-danger py-4">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                Gagal melakukan pencarian. Silakan coba lagi.
+                            </td>
+                        </tr>
+                    `;
+                });
+        }
+
+        function showDetailModal(reportId) {
+            fetch(`/reports/${reportId}/json/`)
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error("Detail laporan tidak dapat dimuat.");
+                    }
+
+                    return response.json();
+                })
+                .then(function (data) {
+                    document.getElementById("modalTitle").textContent = data.title;
+                    document.getElementById("modalCategory").textContent = data.category;
+                    document.getElementById("modalLocation").textContent = data.location;
+                    document.getElementById("modalDescription").textContent = data.description;
+                    document.getElementById("modalCreatedAt").textContent =
+                        formatDate(data.created_at);
+
+                    document.getElementById("modalStatus").innerHTML =
+                        getStatusBadge(data.status);
+
+                    if (detailModal) {
+                        detailModal.show();
+                    }
+                })
+                .catch(function (error) {
+                    console.error("Gagal mengambil detail laporan:", error);
+                    alert("Detail laporan tidak dapat dimuat. Silakan coba lagi.");
+                });
+        }
+
+        function formatDate(datetimeString) {
+            const date = new Date(datetimeString);
+
+            return date.toLocaleString("id-ID", {
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
             });
+        }
+
+        const debouncedSearch = debounce(doSearch, 300);
+
+        if (searchInput) {
+            searchInput.addEventListener("input", debouncedSearch);
+        }
+
+        tableBody.addEventListener("click", function (event) {
+            const detailButton = event.target.closest(".detail-btn");
+
+            if (!detailButton) {
+                return;
+            }
+
+            showDetailModal(detailButton.dataset.id);
+        });
     });
-});
 </script>
 {% endblock %}

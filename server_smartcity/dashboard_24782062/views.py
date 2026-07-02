@@ -35,6 +35,11 @@ class DashboardView(AdminDashboardRequiredMixin, TemplateView):
 
 
 class DashboardStatsJsonView(AdminDashboardRequiredMixin, View):
+    """
+    Mengirimkan data statistik dashboard dalam bentuk JSON untuk Chart.js,
+    summary cards, dan tabel laporan terbaru.
+    """
+
     def get(self, request, *args, **kwargs):
         status_order = ['REPORTED', 'VERIFIED', 'IN_PROGRESS', 'RESOLVED']
         status_display = {
@@ -56,13 +61,25 @@ class DashboardStatsJsonView(AdminDashboardRequiredMixin, View):
             for item in status_counts_raw
         }
 
+        reported_count = status_count_map.get('REPORTED', 0)
+        verified_count = status_count_map.get('VERIFIED', 0)
+        in_progress_count = status_count_map.get('IN_PROGRESS', 0)
+        resolved_count = status_count_map.get('RESOLVED', 0)
+
+        processing_count = verified_count + in_progress_count
+
         status_labels = []
         status_counts = []
         status_percentages = []
 
         for report_status in status_order:
             count = status_count_map.get(report_status, 0)
-            percentage = round((count / total_reports) * 100, 2) if total_reports > 0 else 0
+
+            percentage = (
+                round((count / total_reports) * 100, 2)
+                if total_reports > 0
+                else 0
+            )
 
             status_labels.append(status_display[report_status])
             status_counts.append(count)
@@ -71,7 +88,7 @@ class DashboardStatsJsonView(AdminDashboardRequiredMixin, View):
         category_counts_raw = (
             Report.objects.values('category')
             .annotate(total=Count('id'))
-            .order_by('category')
+            .order_by('-total', 'category')
         )
 
         category_labels = [item['category'] for item in category_counts_raw]
@@ -80,16 +97,36 @@ class DashboardStatsJsonView(AdminDashboardRequiredMixin, View):
         latest_reported = list(
             Report.objects.filter(status='REPORTED')
             .order_by('-created_at')[:5]
-            .values('id', 'title', 'category', 'location', 'status', 'created_at')
+            .values(
+                'id',
+                'title',
+                'category',
+                'location',
+                'status',
+                'created_at',
+            )
         )
 
         latest_resolved = list(
             Report.objects.filter(status='RESOLVED')
             .order_by('-created_at')[:5]
-            .values('id', 'title', 'category', 'location', 'status', 'created_at')
+            .values(
+                'id',
+                'title',
+                'category',
+                'location',
+                'status',
+                'created_at',
+            )
         )
 
         data = {
+            'summary': {
+                'total_reports': total_reports,
+                'reported': reported_count,
+                'processing': processing_count,
+                'resolved': resolved_count,
+            },
             'status_distribution': {
                 'labels': status_labels,
                 'counts': status_counts,

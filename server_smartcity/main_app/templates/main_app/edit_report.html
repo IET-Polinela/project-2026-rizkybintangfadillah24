@@ -1,6 +1,187 @@
 {% extends 'base.html' %}
 
-{% block title %}Edit Laporan{% endblock %}
+{% block title %}Edit Laporan | Natar City{% endblock %}
+
+{% block extra_head %}
+<style>
+    .edit-report-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1.25rem;
+        margin-bottom: 1.45rem;
+    }
+
+    .edit-report-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.42rem;
+        margin-bottom: 0.5rem;
+        color: var(--app-primary);
+        font-size: 0.73rem;
+        font-weight: 800;
+        letter-spacing: 0.075em;
+        text-transform: uppercase;
+    }
+
+    .edit-report-subtitle {
+        max-width: 43rem;
+        color: var(--app-muted);
+        font-size: 0.91rem;
+        line-height: 1.65;
+    }
+
+    .edit-report-header-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 3rem;
+        height: 3rem;
+        border: 1px solid rgba(191, 219, 254, 0.9);
+        border-radius: 0.9rem;
+        background: #f8fbff;
+        color: var(--app-primary);
+        font-size: 1.2rem;
+        box-shadow: var(--app-shadow-sm);
+    }
+
+    .edit-report-card {
+        border-radius: 1.1rem;
+    }
+
+    .edit-report-card .card-body {
+        padding: 1.65rem;
+    }
+
+    .edit-report-notice {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.8rem;
+        margin-bottom: 1.35rem;
+        padding: 1rem 1.05rem;
+        border: 1px solid rgba(255, 224, 138, 0.85);
+        border-radius: 0.9rem;
+        background: #fffaf0;
+    }
+
+    .edit-report-notice-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: 0.7rem;
+        background: #fff0c7;
+        color: #b77900;
+        font-size: 0.95rem;
+    }
+
+    .edit-report-notice h2 {
+        margin-bottom: 0.22rem;
+        color: var(--app-text);
+        font-size: 0.95rem;
+        font-weight: 800;
+    }
+
+    .edit-report-notice p {
+        margin-bottom: 0;
+        color: var(--app-muted);
+        font-size: 0.84rem;
+        line-height: 1.6;
+    }
+
+    .edit-report-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.1rem;
+    }
+
+    .edit-report-group-full {
+        grid-column: 1 / -1;
+    }
+
+    .edit-report-field {
+        min-width: 0;
+    }
+
+    .edit-report-help {
+        display: block;
+        margin-top: 0.42rem;
+        color: var(--app-muted);
+        font-size: 0.78rem;
+        line-height: 1.5;
+    }
+
+    .edit-report-error {
+        margin-top: 0.45rem;
+        color: var(--app-danger);
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .edit-report-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-top: 1.6rem;
+        padding-top: 1.35rem;
+        border-top: 1px solid var(--app-border);
+    }
+
+    .edit-report-note {
+        display: inline-flex;
+        align-items: flex-start;
+        gap: 0.52rem;
+        max-width: 32rem;
+        color: var(--app-muted);
+        font-size: 0.8rem;
+        line-height: 1.55;
+    }
+
+    .edit-report-note i {
+        margin-top: 0.08rem;
+        color: #b77900;
+    }
+
+    .edit-report-button-group {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 0.65rem;
+    }
+
+    @media (max-width: 767.98px) {
+        .edit-report-header,
+        .edit-report-actions {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .edit-report-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .edit-report-group-full {
+            grid-column: auto;
+        }
+
+        .edit-report-card .card-body {
+            padding: 1.2rem;
+        }
+
+        .edit-report-button-group {
+            justify-content: stretch;
+        }
+
+        .edit-report-button-group .btn {
+            flex: 1;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <nav aria-label="breadcrumb">
@@ -8,47 +189,168 @@
         <li class="breadcrumb-item">
             <a href="{% url 'home' %}">Home</a>
         </li>
+
         <li class="breadcrumb-item">
             <a href="{% url 'report_list' %}">Reports</a>
         </li>
-        <li class="breadcrumb-item active">Edit Laporan</li>
+
+        <li class="breadcrumb-item active" aria-current="page">
+            Edit Laporan
+        </li>
     </ol>
 </nav>
 
-<div class="card shadow-sm">
+<section class="edit-report-header">
+    <div>
+        <div class="edit-report-kicker">
+            <i class="bi bi-pencil-square"></i>
+            Pembaruan Data
+        </div>
+
+        <h1 class="section-heading mb-1">Edit Laporan</h1>
+
+        <p class="edit-report-subtitle mb-0">
+            Perbarui informasi laporan secara teliti agar data yang tersimpan tetap
+            lengkap dan sesuai dengan kondisi yang dilaporkan.
+        </p>
+    </div>
+
+    <span class="edit-report-header-icon" aria-hidden="true">
+        <i class="bi bi-file-earmark-text-fill"></i>
+    </span>
+</section>
+
+<section class="card edit-report-card">
     <div class="card-body">
-        <h2 class="mb-4">Edit Laporan</h2>
+        <div class="edit-report-notice">
+            <span class="edit-report-notice-icon">
+                <i class="bi bi-exclamation-circle-fill"></i>
+            </span>
+
+            <div>
+                <h2>Periksa Data Sebelum Menyimpan</h2>
+
+                <p>
+                    Pastikan judul, kategori, deskripsi, dan lokasi telah sesuai
+                    sebelum memperbarui laporan.
+                </p>
+            </div>
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger mb-4" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
 
         <form method="post" class="loading-form">
             {% csrf_token %}
 
-            <div class="mb-3">
-                <label for="{{ form.title.id_for_label }}" class="form-label">Judul</label>
-                {{ form.title }}
+            <div class="edit-report-grid">
+                <div class="edit-report-field">
+                    <label for="{{ form.title.id_for_label }}" class="form-label">
+                        Judul Laporan
+                    </label>
+
+                    {{ form.title }}
+
+                    <span class="edit-report-help">
+                        Gunakan judul singkat yang mencerminkan inti masalah.
+                    </span>
+
+                    {% for error in form.title.errors %}
+                        <div class="edit-report-error">
+                            <i class="bi bi-exclamation-circle-fill me-1"></i>
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="edit-report-field">
+                    <label for="{{ form.category.id_for_label }}" class="form-label">
+                        Kategori
+                    </label>
+
+                    {{ form.category }}
+
+                    <span class="edit-report-help">
+                        Pilih kategori yang paling relevan dengan laporan.
+                    </span>
+
+                    {% for error in form.category.errors %}
+                        <div class="edit-report-error">
+                            <i class="bi bi-exclamation-circle-fill me-1"></i>
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="edit-report-field edit-report-group-full">
+                    <label for="{{ form.description.id_for_label }}" class="form-label">
+                        Deskripsi Laporan
+                    </label>
+
+                    {{ form.description }}
+
+                    <span class="edit-report-help">
+                        Jelaskan kondisi yang dilaporkan secara ringkas, jelas, dan terukur.
+                    </span>
+
+                    {% for error in form.description.errors %}
+                        <div class="edit-report-error">
+                            <i class="bi bi-exclamation-circle-fill me-1"></i>
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="edit-report-field edit-report-group-full">
+                    <label for="{{ form.location.id_for_label }}" class="form-label">
+                        Lokasi
+                    </label>
+
+                    {{ form.location }}
+
+                    <span class="edit-report-help">
+                        Pastikan lokasi cukup spesifik untuk mendukung proses tindak lanjut.
+                    </span>
+
+                    {% for error in form.location.errors %}
+                        <div class="edit-report-error">
+                            <i class="bi bi-exclamation-circle-fill me-1"></i>
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label for="{{ form.category.id_for_label }}" class="form-label">Kategori</label>
-                {{ form.category }}
-            </div>
+            <div class="edit-report-actions">
+                <div class="edit-report-note">
+                    <i class="bi bi-shield-check"></i>
 
-            <div class="mb-3">
-                <label for="{{ form.description.id_for_label }}" class="form-label">Deskripsi</label>
-                {{ form.description }}
-            </div>
+                    <span>
+                        Akses pembaruan laporan mengikuti kebijakan hak akses yang
+                        ditetapkan pada aplikasi.
+                    </span>
+                </div>
 
-            <div class="mb-3">
-                <label for="{{ form.location.id_for_label }}" class="form-label">Lokasi</label>
-                {{ form.location }}
-            </div>
+                <div class="edit-report-button-group">
+                    <a href="{% url 'report_list' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i>
+                        Kembali
+                    </a>
 
-            <button type="submit" class="btn btn-warning text-dark submit-btn">
-                Update
-            </button>
-            <a href="{% url 'report_list' %}" class="btn btn-secondary">
-                Kembali
-            </a>
+                    <button type="submit" class="btn btn-warning text-dark submit-btn">
+                        <i class="bi bi-save2"></i>
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </div>
         </form>
     </div>
-</div>
+</section>
 {% endblock %}

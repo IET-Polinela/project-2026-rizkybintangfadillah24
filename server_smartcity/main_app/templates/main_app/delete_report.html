@@ -1,6 +1,192 @@
 {% extends 'base.html' %}
 
-{% block title %}Hapus Laporan{% endblock %}
+{% block title %}Hapus Laporan | Natar City{% endblock %}
+
+{% block extra_head %}
+<style>
+    .delete-report-page {
+        display: flex;
+        justify-content: center;
+        padding: 1rem 0;
+    }
+
+    .delete-report-card {
+        width: 100%;
+        max-width: 43rem;
+        overflow: hidden;
+        border: 1px solid rgba(248, 180, 180, 0.9);
+        border-radius: 1.15rem;
+        box-shadow: var(--app-shadow);
+    }
+
+    .delete-report-banner {
+        position: relative;
+        padding: 1.65rem;
+        overflow: hidden;
+        background:
+            radial-gradient(
+                circle at right top,
+                rgba(254, 202, 202, 0.72),
+                transparent 14rem
+            ),
+            linear-gradient(120deg, #fff7f7, #fffafa);
+        border-bottom: 1px solid rgba(248, 180, 180, 0.72);
+    }
+
+    .delete-report-banner::after {
+        position: absolute;
+        top: -2.2rem;
+        right: -1.8rem;
+        width: 7.3rem;
+        height: 7.3rem;
+        border-radius: 999px;
+        background: rgba(248, 113, 113, 0.12);
+        content: "";
+    }
+
+    .delete-report-icon {
+        position: relative;
+        z-index: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 3.25rem;
+        height: 3.25rem;
+        margin-bottom: 1rem;
+        border-radius: 1rem;
+        background: #fee2e2;
+        color: var(--app-danger);
+        font-size: 1.35rem;
+    }
+
+    .delete-report-kicker {
+        position: relative;
+        z-index: 1;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.38rem;
+        margin-bottom: 0.45rem;
+        color: #b4232f;
+        font-size: 0.73rem;
+        font-weight: 800;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+    }
+
+    .delete-report-banner h1 {
+        position: relative;
+        z-index: 1;
+        margin-bottom: 0.45rem;
+        color: #7f1d1d;
+        font-size: 1.55rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+    }
+
+    .delete-report-banner p {
+        position: relative;
+        z-index: 1;
+        max-width: 34rem;
+        margin-bottom: 0;
+        color: #8c3c3c;
+        font-size: 0.9rem;
+        line-height: 1.65;
+    }
+
+    .delete-report-content {
+        padding: 1.65rem;
+    }
+
+    .delete-report-summary {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.85rem;
+        margin-bottom: 1.25rem;
+        padding: 1rem;
+        border: 1px solid var(--app-border);
+        border-radius: 0.9rem;
+        background: #fbfdff;
+    }
+
+    .delete-report-summary-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 2.4rem;
+        height: 2.4rem;
+        border-radius: 0.75rem;
+        background: var(--app-primary-soft);
+        color: var(--app-primary);
+        font-size: 1rem;
+    }
+
+    .delete-report-summary-label {
+        display: block;
+        margin-bottom: 0.3rem;
+        color: var(--app-muted);
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.055em;
+        text-transform: uppercase;
+    }
+
+    .delete-report-summary-title {
+        color: var(--app-text);
+        font-size: 0.98rem;
+        font-weight: 800;
+        line-height: 1.55;
+        overflow-wrap: anywhere;
+    }
+
+    .delete-report-warning {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.7rem;
+        margin-bottom: 1.45rem;
+        padding: 0.95rem 1rem;
+        border: 1px solid rgba(254, 215, 170, 0.92);
+        border-radius: 0.85rem;
+        background: #fffaf2;
+    }
+
+    .delete-report-warning i {
+        margin-top: 0.05rem;
+        color: #c87500;
+        font-size: 1rem;
+    }
+
+    .delete-report-warning p {
+        margin-bottom: 0;
+        color: #7a5b2a;
+        font-size: 0.85rem;
+        line-height: 1.6;
+    }
+
+    .delete-report-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.65rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--app-border);
+    }
+
+    @media (max-width: 575.98px) {
+        .delete-report-banner,
+        .delete-report-content {
+            padding: 1.25rem;
+        }
+
+        .delete-report-actions {
+            flex-direction: column-reverse;
+        }
+
+        .delete-report-actions .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <nav aria-label="breadcrumb">
@@ -8,31 +194,79 @@
         <li class="breadcrumb-item">
             <a href="{% url 'home' %}">Home</a>
         </li>
+
         <li class="breadcrumb-item">
             <a href="{% url 'report_list' %}">Reports</a>
         </li>
-        <li class="breadcrumb-item active">Hapus Laporan</li>
+
+        <li class="breadcrumb-item active" aria-current="page">
+            Hapus Laporan
+        </li>
     </ol>
 </nav>
 
-<div class="card shadow-sm border-danger">
-    <div class="card-body">
-        <h2 class="text-danger mb-3">Hapus Laporan</h2>
+<section class="delete-report-page">
+    <div class="card delete-report-card">
+        <div class="delete-report-banner">
+            <span class="delete-report-icon" aria-hidden="true">
+                <i class="bi bi-trash3-fill"></i>
+            </span>
 
-        <p>
-            Apakah Anda yakin ingin menghapus laporan
-            <strong>{{ report.title }}</strong>?
-        </p>
+            <div class="delete-report-kicker">
+                <i class="bi bi-exclamation-octagon-fill"></i>
+                Konfirmasi Tindakan
+            </div>
 
-        <p class="text-muted">
-            Tindakan ini tidak dapat dibatalkan.
-        </p>
+            <h1>Hapus Laporan</h1>
 
-        <form method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Ya, Hapus</button>
-            <a href="{% url 'report_list' %}" class="btn btn-secondary">Batal</a>
-        </form>
+            <p>
+                Tindakan ini akan menghapus data laporan secara permanen dari sistem.
+                Pastikan laporan yang dipilih sudah benar.
+            </p>
+        </div>
+
+        <div class="delete-report-content">
+            <div class="delete-report-summary">
+                <span class="delete-report-summary-icon" aria-hidden="true">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                </span>
+
+                <div>
+                    <span class="delete-report-summary-label">
+                        Laporan yang akan dihapus
+                    </span>
+
+                    <div class="delete-report-summary-title">
+                        {{ report.title }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="delete-report-warning">
+                <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+
+                <p>
+                    Data yang telah dihapus tidak dapat dipulihkan kembali. Pilih
+                    <strong>Batal</strong> apabila Anda tidak yakin ingin melanjutkan.
+                </p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="delete-report-actions">
+                    <a href="{% url 'report_list' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i>
+                        Batal
+                    </a>
+
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash3-fill"></i>
+                        Ya, Hapus Laporan
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+</section>
 {% endblock %}

@@ -1,6 +1,192 @@
 {% extends 'base.html' %}
 
-{% block title %}Tambah Laporan{% endblock %}
+{% block title %}Tambah Laporan Internal | Natar City{% endblock %}
+
+{% block extra_head %}
+<style>
+    .report-form-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1.25rem;
+        margin-bottom: 1.45rem;
+    }
+
+    .report-form-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.42rem;
+        margin-bottom: 0.5rem;
+        color: var(--app-primary);
+        font-size: 0.73rem;
+        font-weight: 800;
+        letter-spacing: 0.075em;
+        text-transform: uppercase;
+    }
+
+    .report-form-subtitle {
+        max-width: 43rem;
+        color: var(--app-muted);
+        font-size: 0.91rem;
+        line-height: 1.65;
+    }
+
+    .report-form-header-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 3rem;
+        height: 3rem;
+        border: 1px solid rgba(191, 219, 254, 0.9);
+        border-radius: 0.9rem;
+        background: #f8fbff;
+        color: var(--app-primary);
+        font-size: 1.2rem;
+        box-shadow: var(--app-shadow-sm);
+    }
+
+    .report-form-card {
+        border-radius: 1.1rem;
+    }
+
+    .report-form-card .card-body {
+        padding: 1.65rem;
+    }
+
+    .report-form-notice {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.8rem;
+        margin-bottom: 1.35rem;
+        padding: 1rem 1.05rem;
+        border: 1px solid rgba(191, 219, 254, 0.9);
+        border-radius: 0.9rem;
+        background: #f7fbff;
+    }
+
+    .report-form-notice-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: 0.7rem;
+        background: #dceeff;
+        color: var(--app-primary);
+        font-size: 0.95rem;
+    }
+
+    .report-form-notice h2 {
+        margin-bottom: 0.22rem;
+        color: var(--app-text);
+        font-size: 0.95rem;
+        font-weight: 800;
+    }
+
+    .report-form-notice p {
+        margin-bottom: 0;
+        color: var(--app-muted);
+        font-size: 0.84rem;
+        line-height: 1.6;
+    }
+
+    .report-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.1rem;
+    }
+
+    .report-form-group-full {
+        grid-column: 1 / -1;
+    }
+
+    .report-field-wrapper {
+        min-width: 0;
+    }
+
+    .report-field-help {
+        display: block;
+        margin-top: 0.42rem;
+        color: var(--app-muted);
+        font-size: 0.78rem;
+        line-height: 1.5;
+    }
+
+    .report-field-error {
+        margin-top: 0.45rem;
+        color: var(--app-danger);
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .report-form-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-top: 1.6rem;
+        padding-top: 1.35rem;
+        border-top: 1px solid var(--app-border);
+    }
+
+    .report-form-policy-note {
+        display: inline-flex;
+        align-items: flex-start;
+        gap: 0.52rem;
+        max-width: 32rem;
+        color: var(--app-muted);
+        font-size: 0.8rem;
+        line-height: 1.55;
+    }
+
+    .report-form-policy-note i {
+        margin-top: 0.08rem;
+        color: var(--app-primary);
+    }
+
+    .report-form-action-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 0.65rem;
+    }
+
+    @media (max-width: 767.98px) {
+        .report-form-header,
+        .report-form-actions {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .report-form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .report-form-group-full {
+            grid-column: auto;
+        }
+
+        .report-form-card .card-body {
+            padding: 1.2rem;
+        }
+
+        .report-form-header-icon {
+            width: 2.7rem;
+            height: 2.7rem;
+        }
+
+        .report-form-action-buttons {
+            justify-content: stretch;
+        }
+
+        .report-form-action-buttons .btn {
+            flex: 1;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <nav aria-label="breadcrumb">
@@ -8,47 +194,168 @@
         <li class="breadcrumb-item">
             <a href="{% url 'home' %}">Home</a>
         </li>
+
         <li class="breadcrumb-item">
             <a href="{% url 'report_list' %}">Reports</a>
         </li>
-        <li class="breadcrumb-item active">Tambah Laporan</li>
+
+        <li class="breadcrumb-item active" aria-current="page">
+            Tambah Laporan Internal
+        </li>
     </ol>
 </nav>
 
-<div class="card shadow-sm">
+<section class="report-form-header">
+    <div>
+        <div class="report-form-kicker">
+            <i class="bi bi-plus-circle-fill"></i>
+            Portal Admin
+        </div>
+
+        <h1 class="section-heading mb-1">Tambah Laporan Internal</h1>
+
+        <p class="report-form-subtitle mb-0">
+            Buat laporan internal apabila diperlukan untuk pencatatan atau kebutuhan
+            operasional administrator.
+        </p>
+    </div>
+
+    <span class="report-form-header-icon" aria-hidden="true">
+        <i class="bi bi-clipboard2-plus-fill"></i>
+    </span>
+</section>
+
+<section class="card report-form-card">
     <div class="card-body">
-        <h2 class="mb-4">Tambah Laporan</h2>
+        <div class="report-form-notice">
+            <span class="report-form-notice-icon">
+                <i class="bi bi-info-circle-fill"></i>
+            </span>
+
+            <div>
+                <h2>Catatan Penggunaan</h2>
+
+                <p>
+                    Laporan warga utama dibuat melalui Citizen Portal. Form ini tersedia
+                    untuk kebutuhan pencatatan laporan internal oleh administrator.
+                </p>
+            </div>
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger mb-4" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
 
         <form method="post" class="loading-form">
             {% csrf_token %}
 
-            <div class="mb-3">
-                <label for="{{ form.title.id_for_label }}" class="form-label">Judul</label>
-                {{ form.title }}
+            <div class="report-form-grid">
+                <div class="report-field-wrapper">
+                    <label for="{{ form.title.id_for_label }}" class="form-label">
+                        Judul Laporan
+                    </label>
+
+                    {{ form.title }}
+
+                    <span class="report-field-help">
+                        Gunakan judul singkat yang menggambarkan masalah utama.
+                    </span>
+
+                    {% for error in form.title.errors %}
+                        <div class="report-field-error">
+                            <i class="bi bi-exclamation-circle-fill me-1"></i>
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="report-field-wrapper">
+                    <label for="{{ form.category.id_for_label }}" class="form-label">
+                        Kategori
+                    </label>
+
+                    {{ form.category }}
+
+                    <span class="report-field-help">
+                        Pilih kategori yang paling sesuai dengan laporan.
+                    </span>
+
+                    {% for error in form.category.errors %}
+                        <div class="report-field-error">
+                            <i class="bi bi-exclamation-circle-fill me-1"></i>
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="report-field-wrapper report-form-group-full">
+                    <label for="{{ form.description.id_for_label }}" class="form-label">
+                        Deskripsi Laporan
+                    </label>
+
+                    {{ form.description }}
+
+                    <span class="report-field-help">
+                        Jelaskan kondisi, dampak, atau informasi penting yang perlu diketahui.
+                    </span>
+
+                    {% for error in form.description.errors %}
+                        <div class="report-field-error">
+                            <i class="bi bi-exclamation-circle-fill me-1"></i>
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="report-field-wrapper report-form-group-full">
+                    <label for="{{ form.location.id_for_label }}" class="form-label">
+                        Lokasi
+                    </label>
+
+                    {{ form.location }}
+
+                    <span class="report-field-help">
+                        Isi lokasi secara jelas agar memudahkan proses tindak lanjut.
+                    </span>
+
+                    {% for error in form.location.errors %}
+                        <div class="report-field-error">
+                            <i class="bi bi-exclamation-circle-fill me-1"></i>
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label for="{{ form.category.id_for_label }}" class="form-label">Kategori</label>
-                {{ form.category }}
-            </div>
+            <div class="report-form-actions">
+                <div class="report-form-policy-note">
+                    <i class="bi bi-shield-check"></i>
 
-            <div class="mb-3">
-                <label for="{{ form.description.id_for_label }}" class="form-label">Deskripsi</label>
-                {{ form.description }}
-            </div>
+                    <span>
+                        Laporan akan disimpan sesuai mekanisme workflow aplikasi dan
+                        dapat dikelola melalui halaman Reports.
+                    </span>
+                </div>
 
-            <div class="mb-3">
-                <label for="{{ form.location.id_for_label }}" class="form-label">Lokasi</label>
-                {{ form.location }}
-            </div>
+                <div class="report-form-action-buttons">
+                    <a href="{% url 'report_list' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i>
+                        Kembali
+                    </a>
 
-            <button type="submit" class="btn btn-success submit-btn">
-                Submit
-            </button>
-            <a href="{% url 'report_list' %}" class="btn btn-secondary">
-                Kembali
-            </a>
+                    <button type="submit" class="btn btn-primary submit-btn">
+                        <i class="bi bi-check2-circle"></i>
+                        Simpan Laporan
+                    </button>
+                </div>
+            </div>
         </form>
     </div>
-</div>
+</section>
 {% endblock %}
